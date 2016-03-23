@@ -11,7 +11,6 @@
 #define B_ATLAS_SHIP_WINDOW (30*AU+2)
 
 
-
 // PC indexes
 #define B_ATLAS_PC_BODY_BASE (31*AU+24)
 #define B_ATLAS_PC_FACE_FRONT (30*AU+24)
@@ -48,6 +47,9 @@
 #define B_ATLAS_BUILDER_BASE (41*AU+9)
 #define B_ATLAS_MINE (38*AU+9)
 #define B_ATLAS_FLYGEN (18*AU+11)
+#define B_ATLAS_WORM_NORMAL_BASE (17*AU+1)                                      
+#define B_ATLAS_WORM_SHOOTER_BASE (17*AU+2)                                     
+#define B_ATLAS_WORM_EGG (17*AU+3)
 
 // Bullets
 #define B_ATLAS_BULLET_BOUNCER (37*AU+9)

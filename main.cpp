@@ -8,16 +8,23 @@
 #endif
 
 #include "client.h"
-
+#include "dimension.h"
+#include "field.h"
+#include "char.h"
+#include "pc.h"
 
 MoyaiClient *g_moyai_client;
 Viewport *g_viewport;
-Layer *g_main_layer;
+Layer *g_char_layer;
+Layer *g_effect_layer;
 Texture *g_base_atlas;
 TileDeck *g_base_deck;
+TileDeck *g_girev_deck;
 Camera *g_camera;
-ColorReplacerShader *g_replacer_shader;
+ColorReplacerShader *g_eye_col_replacer;
 SoundSystem *g_sound_system;
+Sound *g_shoot_sig_sound;
+Sound *g_kill_sound;
 
 int g_last_render_cnt ;
 
@@ -25,8 +32,11 @@ GLFWwindow *g_window;
 
 static const int SCRW=1024, SCRH=768;
 
+Field *g_fld;
 
+PC *g_pc; // to be removed
 
+/////////////
 
 void gameUpdate(void) {
     static double last_print_at = 0;
@@ -50,7 +60,7 @@ void gameUpdate(void) {
     }
 
     // replace white to random color
-    g_replacer_shader->setColor( Color(0xF7E26B), Color( range(0,1),range(0,1),range(0,1),1), 0.02 );
+    g_eye_col_replacer->setColor( Color(0xF7E26B), Color( range(0,1),range(0,1),range(0,1),1), 0.02 );
 
     if( glfwGetKey( g_window, 'Q') ) {
         print("Q pressed");
@@ -106,12 +116,6 @@ void gameInit() {
 #endif
     glClearColor(0.2,0.2,0.2,1);
 
-    // shader
-    g_replacer_shader = new ColorReplacerShader();
-    if( !g_replacer_shader->init() ){
-        print("can't initialize shader");
-        exit(1);
-    }
 
     g_moyai_client = new MoyaiClient(g_window);
 
@@ -123,21 +127,41 @@ void gameInit() {
     g_viewport->setSize(SCRW*retina,SCRH*retina); // set actual framebuffer size to output
     g_viewport->setScale2D(SCRW,SCRH); // set scale used by props that will be rendered
 
-    g_main_layer = new Layer();
-    g_moyai_client->insertLayer(g_main_layer);
-    g_main_layer->setViewport(g_viewport);
-
+    g_char_layer = new Layer();
+    g_moyai_client->insertLayer(g_char_layer);
+    g_char_layer->setViewport(g_viewport);    
+    g_effect_layer = new Layer();
+    g_moyai_client->insertLayer(g_effect_layer);
+    g_effect_layer->setViewport(g_viewport);
     g_base_atlas = new Texture();
-    g_base_atlas->load("./assets/base.png");
+    g_base_atlas->load("./images/k22base1024.png");
     g_base_deck = new TileDeck();
     g_base_deck->setTexture(g_base_atlas);
-    g_base_deck->setSize(32,32,8,8 );
+    g_base_deck->setSize(32,32,24,24 );
+
+    Texture *girevtex = new Texture();
+    girevtex->load( "./images/girev64.png");
+    g_girev_deck = new TileDeck();
+    g_girev_deck->setTexture(girevtex);
+    g_girev_deck->setSize(1,1,64,64);
     
     g_camera = new Camera();
     g_camera->setLoc(0,0);
 
-    g_main_layer->setCamera(g_camera);
+    g_char_layer->setCamera(g_camera);
+    g_effect_layer->setCamera(g_camera);
 
+    // Eye colors
+    g_eye_col_replacer = new ColorReplacerShader();
+    if(!g_eye_col_replacer->init()) {
+        print("can't initialize shader");
+        exit(0);
+    }
+
+    g_fld = new Field(64,64);
+
+    g_pc = new PC( Vec2(0,0) );
+    g_pc->respawn();
 }
 
 

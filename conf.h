@@ -1,0 +1,21 @@
+#ifndef _CONF_H_
+#define _CONF_H_
+
+#define PC_MAX_WALK_SPEED (PPC*10)
+
+#define RESPAWN_DELAY_SEC 3
+
+#define BEAM_NORMAL_VEL (PPC*20)
+
+#define DEFAULT_TEX_EPS 0.00001
+
+#define ENEMY_DEFAULT_TIMEOUT 30
+
+#define WORM_SHOOT_DISTANCE (30*PPC)
+
+#define TAKWASHI_SHOOT_DISTANCE (30*PPC)
+#define MACHINE_SHOOT_DISTANCE (50*PPC)
+
+
+
+#endif

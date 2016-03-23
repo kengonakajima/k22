@@ -1,4 +1,4 @@
-SRCS=main.cpp
+SRCS=main.cpp pc.cpp char.cpp field.cpp enemy.cpp effect.cpp
 
 OBJS=$(SRCS:.cpp=.o)
 MOYAILIB=./moyai/libmoyaicl.a
@@ -21,6 +21,17 @@ $(OUT) : $(OBJS)
 
 main.o : main.cpp
 	g++ -c main.cpp $(CFLAGS)
+pc.o : pc.cpp
+	g++ -c pc.cpp $(CFLAGS)
+char.o : char.cpp
+	g++ -c char.cpp $(CFLAGS)
+field.o : field.cpp
+	g++ -c field.cpp $(CFLAGS)
+enemy.o : enemy.cpp
+	g++ -c enemy.cpp $(CFLAGS)
+effect.o : effect.cpp
+	g++ -c effect.cpp $(CFLAGS)
+
 clean:
 	rm $(OUT) *.o deps.make
 
