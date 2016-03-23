@@ -11,6 +11,7 @@ public:
     DIR4 dir;
     float body_size;
     Vec2 shoot_v;
+    double last_shoot_at;
 
     double knockback_until;
     Vec2 knockback_v;
@@ -46,8 +47,8 @@ public:
 
     virtual void onDelete();
 
-    bool isSwappable( int i0, int i1 );
-
+    void tryShoot();
+    Vec2 getHandLocalLoc( Vec2 direction );
 };
 
 

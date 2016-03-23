@@ -25,8 +25,12 @@ ColorReplacerShader *g_eye_col_replacer;
 SoundSystem *g_sound_system;
 Sound *g_shoot_sig_sound;
 Sound *g_kill_sound;
-
+Sound *g_shoot_sound;
 int g_last_render_cnt ;
+
+Mouse *g_mouse;
+Keyboard *g_keyboard;
+Pad *g_pad;
 
 GLFWwindow *g_window;
 
@@ -38,6 +42,23 @@ PC *g_pc; // to be removed
 
 /////////////
 
+void keyboardCallback( GLFWwindow *window, int key, int scancode, int action, int mods ) {
+    g_keyboard->update( key, action, mods & GLFW_MOD_SHIFT, mods & GLFW_MOD_CONTROL, mods & GLFW_MOD_ALT );
+}
+void mouseButtonCallback( GLFWwindow *window, int button, int action, int mods ) {
+    g_mouse->updateButton( button, action, mods & GLFW_MOD_SHIFT, mods & GLFW_MOD_CONTROL, mods & GLFW_MOD_ALT );
+}
+void cursorPosCallback( GLFWwindow *window, double x, double y ) {
+    g_mouse->updateCursorPosition( x,y);
+}
+
+// Assuming camera is not moving (always 0,0 in center of the screen)
+Vec2 screenPosToWorldLoc( Vec2 scrpos ) {
+    return Vec2( scrpos.x - SCRW/2, (scrpos.y - SCRH/2)*-1 );
+}
+
+//////
+
 void gameUpdate(void) {
     static double last_print_at = 0;
     static int frame_counter = 0;
@@ -47,9 +68,11 @@ void gameUpdate(void) {
     double dt = t - last_poll_at;
     
     frame_counter ++;
+
+    glfwPollEvents();
+    g_pad->readKeyboard(g_keyboard);
     
-    int cnt;
-    cnt = g_moyai_client->poll(dt);
+    int cnt = g_moyai_client->poll(dt);
 
     if(last_print_at == 0){
         last_print_at = t;
@@ -66,8 +89,17 @@ void gameUpdate(void) {
         print("Q pressed");
         exit(0);
     }
-    
-    glfwPollEvents();        
+
+    // TODO: implement multiplayer
+    Vec2 ctl_move;
+    g_pad->getVec(&ctl_move);
+    Vec2 cursor_pos = g_mouse->getCursorPos();
+    Vec2 cursor_wloc = screenPosToWorldLoc(cursor_pos);
+    Vec2 shootdir = cursor_wloc - g_pc->loc;
+    Vec2 ctl_shoot = shootdir.normalize(1.0f);
+    if( !g_mouse->getButton(0) ) ctl_shoot*=0;
+    g_pc->ideal_v = ctl_move;
+    g_pc->shoot_v = ctl_shoot;
         
     last_poll_at = t;
 }
@@ -93,6 +125,9 @@ void gameInit() {
 #endif    
 
     g_sound_system = new SoundSystem();
+    g_shoot_sound = g_sound_system->newSound( "sounds/shoot.wav", 0.5, false );          // PC shooting sound option 0.        
+    g_shoot_sig_sound = g_sound_system->newSound( "sounds/shoot_sig.wav" ); // Enemy shoots a fast and small missile SIG.
+    g_kill_sound = g_sound_system->newSound( "sounds/machine_explo.wav", 0.3, false ); // PC shoot and destroy enemy machines.
     
     // glfw
     if( !glfwInit() ) {
@@ -120,11 +155,7 @@ void gameInit() {
     g_moyai_client = new MoyaiClient(g_window);
 
     g_viewport = new Viewport();
-    int retina = 1;
-#if defined(__APPLE__)
-    retina = 2;
-#endif    
-    g_viewport->setSize(SCRW*retina,SCRH*retina); // set actual framebuffer size to output
+    g_viewport->setSize(SCRW,SCRH); // set actual framebuffer size to output
     g_viewport->setScale2D(SCRW,SCRH); // set scale used by props that will be rendered
 
     g_char_layer = new Layer();
@@ -162,6 +193,15 @@ void gameInit() {
 
     g_pc = new PC( Vec2(0,0) );
     g_pc->respawn();
+
+    // input
+    g_keyboard = new Keyboard();
+    glfwSetKeyCallback( g_window, keyboardCallback );
+    g_pad = new Pad();
+    g_mouse = new Mouse();
+    glfwSetMouseButtonCallback( g_window, mouseButtonCallback );
+    glfwSetCursorPosCallback( g_window, cursorPosCallback );
+    
 }
 
 

@@ -10,7 +10,7 @@
 #include "globals.h"
 #include "conf.h"
 
-PC::PC(Vec2 lc) : Char(CAT_PC, lc, g_base_deck, g_char_layer ), ideal_v(0,0), dir(DIR4_DOWN), body_size(8), shoot_v(0,0), knockback_until(0), knockback_v(0,0), equip_prop(NULL), died_at(0), recalled_at(0) {
+PC::PC(Vec2 lc) : Char(CAT_PC, lc, g_base_deck, g_char_layer ), ideal_v(0,0), dir(DIR4_DOWN), body_size(8), shoot_v(0,0), last_shoot_at(0), knockback_until(0), knockback_v(0,0), equip_prop(NULL), died_at(0), recalled_at(0) {
     tex_epsilon=0;
     priority = PRIO_CHAR;
 
@@ -234,8 +234,46 @@ bool PC::charPoll( double dt ) {
     body_prop->loc = loc;
     face_prop->loc = loc;
     hair_prop->loc = loc;
+
+    // try to shoot
+    tryShoot();
     
     return true;
+}
+Vec2 PC::getHandLocalLoc(Vec2 direction) {
+    Vec2 handv;
+    switch(direction.toDir() ) {
+    case DIR4_DOWN:
+        handv.x = -4;
+        handv.y = -8;
+        break;
+    case DIR4_UP:
+        handv.x = 4;
+        handv.y = 8;
+        break;
+    case DIR4_LEFT:
+        handv.x = -8;
+        handv.y = -6;
+        break;
+    case DIR4_RIGHT:
+        handv.x = 8;
+        handv.y = -6;
+        break;
+    default:
+        break;
+    }
+    return handv;
+}
+
+void PC::tryShoot() {
+    if( shoot_v.len() == 0 ) return;
+    if( last_shoot_at > accum_time - getShootIntervalSec() ) return;
+    last_shoot_at = accum_time;
+
+    print("x");
+    Vec2 handv = getHandLocalLoc(shoot_v);
+    g_shoot_sound->play();
+    new Beam( loc + handv, loc + shoot_v + handv, BEAMTYPE_WIDE, B_ATLAS_WIDE_BEAM );
 }
 
 
