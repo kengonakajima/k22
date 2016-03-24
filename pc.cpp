@@ -269,13 +269,10 @@ void PC::tryShoot() {
     if( shoot_v.len() == 0 ) return;
     if( last_shoot_at > accum_time - getShootIntervalSec() ) return;
     last_shoot_at = accum_time;
-
-    print("x");
     Vec2 handv = getHandLocalLoc(shoot_v);
     g_shoot_sound->play();
     new Beam( loc + handv, loc + shoot_v + handv, BEAMTYPE_WIDE, B_ATLAS_WIDE_BEAM );
 }
-
 
 Vec2 PC::calcEquipPosition( DIR4 d ) {
     switch(d) {
@@ -305,7 +302,7 @@ void PC::onAttacked( int dmg, Enemy *e ) {
 
 void PC::respawn() {
     Pos2 p = g_fld->getRespawnPoint();
-    loc = Vec2( p.x*PPC,p.y*PPC);
+    loc = toCellCenter(p);
     died_at = 0;
 }
 

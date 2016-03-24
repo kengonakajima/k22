@@ -8,6 +8,7 @@ extern TileDeck *g_girev_deck;
 
 extern Layer *g_char_layer;
 extern Layer *g_effect_layer;
+extern Layer *g_field_layer;
 
 class Field;
 extern Field *g_fld;

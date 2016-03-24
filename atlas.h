@@ -7,8 +7,9 @@
 #define B_ATLAS_WHITEBOX (35*AU+20)
 
 // Spaceship grounds
-#define B_ATLAS_SHIP_HATCH_BASE (33*AU+8)
+#define B_ATLAS_SHIP_HATCH_BASE (33*AU+15)
 #define B_ATLAS_SHIP_WINDOW (30*AU+2)
+#define B_ATLAS_SHIP_PANEL (34*AU+12)
 
 
 // PC indexes

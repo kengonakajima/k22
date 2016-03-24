@@ -21,8 +21,8 @@ typedef enum {
 } OPENNESS;
 
 typedef enum {
-    GT_AIR = 0, // subindex == 0
-    GT_SHIP = 1, // use subindex
+    GT_SPACE = 0, // subindex == 0
+    GT_PANEL = 1, // use subindex
     GT_HATCH = 2, // use subindex
 } GROUNDTYPE;
     
@@ -32,7 +32,7 @@ public:
     int subindex;
 
     inline bool isWalkable() {
-        return gt == GT_SHIP || gt == GT_HATCH;
+        return gt == GT_PANEL || gt == GT_HATCH;
     }
     inline bool isFlyable() {
         return true;
@@ -48,6 +48,7 @@ public:
     int width, height;
     Vec2 loc_max;
     Cell *cells;
+    Pos2 hatch_pos;
 
     Field( int w, int h );
     void clear();
@@ -103,7 +104,9 @@ public:
     void getCorner4( Vec2 center, float sz, Cell **lb, Cell **rb, Cell **lt, Cell **rt );
     void getRectCorner(Vec2 center, float sz, Cell *out[4]);
 
-    bool findEnemyAttackTarget( Vec2 center, Vec2 *tgt, float distance, float building_target = 15 );    
+    bool findEnemyAttackTarget( Vec2 center, Vec2 *tgt, float distance, float building_target = 15 );
+
+    void generate();
 };
 
 

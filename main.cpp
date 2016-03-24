@@ -12,11 +12,13 @@
 #include "field.h"
 #include "char.h"
 #include "pc.h"
+#include "mapview.h"
 
 MoyaiClient *g_moyai_client;
 Viewport *g_viewport;
 Layer *g_char_layer;
 Layer *g_effect_layer;
+Layer *g_field_layer;
 Texture *g_base_atlas;
 TileDeck *g_base_deck;
 TileDeck *g_girev_deck;
@@ -28,6 +30,7 @@ Sound *g_kill_sound;
 Sound *g_shoot_sound;
 int g_last_render_cnt ;
 
+
 Mouse *g_mouse;
 Keyboard *g_keyboard;
 Pad *g_pad;
@@ -37,6 +40,7 @@ GLFWwindow *g_window;
 static const int SCRW=1024, SCRH=768;
 
 Field *g_fld;
+MapView *g_mapview;
 
 PC *g_pc; // to be removed
 
@@ -54,7 +58,7 @@ void cursorPosCallback( GLFWwindow *window, double x, double y ) {
 
 // Assuming camera is not moving (always 0,0 in center of the screen)
 Vec2 screenPosToWorldLoc( Vec2 scrpos ) {
-    return Vec2( scrpos.x - SCRW/2, (scrpos.y - SCRH/2)*-1 );
+    return Vec2( scrpos.x - SCRW/2, (scrpos.y - SCRH/2)*-1 ) + g_camera->loc;
 }
 
 //////
@@ -158,6 +162,9 @@ void gameInit() {
     g_viewport->setSize(SCRW,SCRH); // set actual framebuffer size to output
     g_viewport->setScale2D(SCRW,SCRH); // set scale used by props that will be rendered
 
+    g_field_layer = new Layer();
+    g_field_layer->setViewport(g_viewport);
+    g_moyai_client->insertLayer(g_field_layer);
     g_char_layer = new Layer();
     g_moyai_client->insertLayer(g_char_layer);
     g_char_layer->setViewport(g_viewport);    
@@ -168,7 +175,7 @@ void gameInit() {
     g_base_atlas->load("./images/k22base1024.png");
     g_base_deck = new TileDeck();
     g_base_deck->setTexture(g_base_atlas);
-    g_base_deck->setSize(32,32,24,24 );
+    g_base_deck->setSize(32,42,24,24 );
 
     Texture *girevtex = new Texture();
     girevtex->load( "./images/girev64.png");
@@ -177,10 +184,11 @@ void gameInit() {
     g_girev_deck->setSize(1,1,64,64);
     
     g_camera = new Camera();
-    g_camera->setLoc(0,0);
+    g_camera->setLoc(SCRW/2,SCRH/2);
 
     g_char_layer->setCamera(g_camera);
     g_effect_layer->setCamera(g_camera);
+    g_field_layer->setCamera(g_camera);
 
     // Eye colors
     g_eye_col_replacer = new ColorReplacerShader();
@@ -190,6 +198,11 @@ void gameInit() {
     }
 
     g_fld = new Field(64,64);
+    g_fld->generate();
+    g_mapview = new MapView(64,64);
+    g_mapview->update(g_fld);
+    g_field_layer->insertProp(g_mapview);
+    g_mapview->setLoc(0,0);
 
     g_pc = new PC( Vec2(0,0) );
     g_pc->respawn();

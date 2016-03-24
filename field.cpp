@@ -9,12 +9,14 @@
 #include "enemy.h"
 #include "globals.h"
 
-        
+#include "shipdata.h"
+
 /////////////////////
 
 Field::Field( int w, int h ) : width(w), height(h), loc_max(w*PPC,h*PPC) {
     size_t sz = sizeof(Cell) * w * h;
     cells = (Cell*) MALLOC( sz );
+    clear();
 }
 
 void Field::clear(){
@@ -22,9 +24,8 @@ void Field::clear(){
     for( int y=0;y<height;y++){
         for(int x=0;x<width;x++){
             Cell *c = get(x,y);
-            c->gt = GT_AIR;
+            c->gt = GT_SPACE;
             c->subindex = 0;
-
         }
     }
     print("field init done");
@@ -33,7 +34,7 @@ void Field::clear(){
 
 
 Pos2 Field::getRespawnPoint() {
-    return Pos2( 8,8 );
+    return hatch_pos;
 }
 
 // Returns 4 bits: RT-LT-RB-LB
@@ -95,6 +96,34 @@ bool Field::findEnemyAttackTarget( Vec2 center, Vec2 *tgt, float char_distance, 
     return false;
 }
 
+GROUNDTYPE charToGT( char ch ) {
+    switch(ch) {
+    case '.': return GT_SPACE;
+    case 'x': return GT_PANEL;
+    case 'Z': return GT_HATCH;
+    default:
+        assertmsg(false, "invalid ship data: ch:%c", ch );
+    }
+    return GT_SPACE;
+}
 
+void Field::generate() {
+    globalInitShipData();
 
-
+    int ship_h = elementof(g_ship_data);
+    for(int y=0;y<ship_h;y++) {
+        int ship_ind = ship_h-1-y;
+        int l = strlen(g_ship_data[ship_ind]);
+        for(int x=0;x<l;x++) {
+            GROUNDTYPE gt = charToGT( g_ship_data[ship_ind][x] );
+            Cell *c = get(x,y);
+            assert(c);
+            c->gt = gt;
+            c->subindex = 0;
+            if(gt == GT_HATCH) {
+                hatch_pos = Pos2(x,y);
+            }
+        }
+        print("");
+    }
+}
