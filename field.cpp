@@ -39,6 +39,8 @@ Pos2 Field::getRespawnPoint() {
 
 // Returns 4 bits: RT-LT-RB-LB
 int Field::getEnterableBits( Vec2 at, float sz, bool flying ) {
+    if(flying) return 0;
+    
     assertmsg( sz < PPC, "too big" );
 
     int out = 0;

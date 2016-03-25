@@ -62,6 +62,10 @@ Vec2 getRandomPos( DIR4 d ) {
     }
 }
 
+void pollPopper() {
+    
+}
+
 /////////////
 void debugKeyPressed( int key ) {
     Vec2 at = g_pc->loc + Vec2(100,100); //getRandomPos(DIR4_UP) );
@@ -132,6 +136,7 @@ void gameUpdate(void) {
     }
 
     pollSpaceBG(dt);
+    pollPopper();
     
     // TODO: implement multiplayer
     Vec2 ctl_move;

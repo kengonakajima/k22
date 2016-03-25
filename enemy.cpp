@@ -236,7 +236,6 @@ Bullet::Bullet( BULLETTYPE blt, Vec2 at, Vec2 to ) : Enemy( at, g_base_deck, FLY
     setIndex(0);
     float vel = PPC;
     timeout = 10;
-    
     bool to_rot = false;
     bool to_quantize = true;
 
@@ -390,7 +389,7 @@ Girev::Girev( Vec2 lc ) :Enemy( lc, g_girev_deck, FLYING ), shoot_at(0), turn_at
     hp = maxhp = 500;
     setScl(64,64);
     timeout = ENEMY_DEFAULT_TIMEOUT * 100;
-    enemy_type = ET_GIREV;
+    enemy_type = ET_GIREV;    
 }
 
 bool Girev::enemyPoll(double dt) {
@@ -428,6 +427,10 @@ bool Repairer::enemyPoll(double dt) {
         float vel = PPC * 2;
         turn_at = accum_time + intvl;
         v = Vec2(0,0).randomize(1).normalize(vel);
+        Vec2 tgt;
+        if( g_fld->findEnemyAttackTarget( loc, &tgt, MACHINE_SHOOT_DISTANCE) ) {        
+            new Bullet( BLT_SPARIO, loc, tgt );
+        }
     }
     return true;    
 }
