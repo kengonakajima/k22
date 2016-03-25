@@ -62,6 +62,8 @@ void Enemy::notifyHitBeam( Beam *b, int dmg ) {
     bool killed = applyDamage(dmg);
     if(killed) {
         // Destroyed!
+    } else {
+        g_beamhit_sound->play();
     }
 }
 // Returns true when destroyed
@@ -232,17 +234,16 @@ Bullet::Bullet( BULLETTYPE blt, Vec2 at, Vec2 to ) : Enemy( at, g_base_deck, FLY
         setIndex( B_ATLAS_GOOBALL_BASE );
         setScl( range( PPC, PPC*2));
         clean_at = 3;
-        beam_hits = false;
         break;
     case BLT_SPARIO:
         vel = PPC * 4;
         setIndex( B_ATLAS_SPARIO );
         setScl( PPC*1.5, PPC*1.5 );
-        beam_hits = false;
         break;
     case BLT_SIG:
         category = CAT_ENEMY; // This bullet can be destroyed by beam
         to_rot = true;
+        beam_hits = true;
         hp = 1;
         vel = PPC * 8;
         setIndex( B_ATLAS_SIG );

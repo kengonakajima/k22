@@ -34,6 +34,7 @@ Sound *g_shoot_sig_sound;
 Sound *g_kill_sound;
 Sound *g_shoot_sound;
 Sound *g_hurt_sound;
+Sound *g_beamhit_sound;
 int g_last_render_cnt ;
 
 
@@ -63,10 +64,13 @@ Vec2 getRandomPos( DIR4 d ) {
 
 /////////////
 void debugKeyPressed( int key ) {
+    Vec2 at = g_pc->loc + Vec2(100,100); //getRandomPos(DIR4_UP) );
     switch(key) {
+    case 'Y':
+        new Takwashi(at);
+        break;
     case 'T':
-        print("t");
-        new Fly( g_pc->loc + Vec2(100,100) ); //getRandomPos(DIR4_UP) );
+        new Fly(at);
         break;
     }
 }
@@ -162,6 +166,7 @@ void gameInit() {
     g_shoot_sig_sound = g_sound_system->newSound( "sounds/shoot_sig.wav" ); // Enemy shoots a fast and small missile SIG.
     g_kill_sound = g_sound_system->newSound( "sounds/machine_explo.wav", 0.3, false ); // PC shoot and destroy enemy machines.
     g_hurt_sound = g_sound_system->newSound( "sounds/hurt.wav", 0.5, false ); // PC got hurt
+    g_beamhit_sound = g_sound_system->newSound( "sounds/beamhithard.wav", 0.5, false ); 
     
     // glfw
     if( !glfwInit() ) {
