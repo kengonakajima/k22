@@ -13,6 +13,7 @@
 #include "char.h"
 #include "pc.h"
 #include "mapview.h"
+#include "enemy.h"
 #include "conf.h"
 
 MoyaiClient *g_moyai_client;
@@ -45,11 +46,23 @@ MapView *g_mapview;
 
 PC *g_pc; // to be removed
 
+Vec2 getRandomPos( DIR4 d ) {
+    switch(d) {
+    case  DIR4_UP: return Vec2( range(0,SCRW), SCRH+PPC);
+    case  DIR4_DOWN: return Vec2( range(0,SCRW), 0-PPC);
+    case  DIR4_RIGHT: return Vec2(SCRW+PPC, range(0,SCRH) );
+    case  DIR4_LEFT: return Vec2(0-PPC, range(0,SCRH) );
+    default:
+        assert(false);
+    }
+}
+
 /////////////
 void debugKeyPressed( int key ) {
     switch(key) {
     case 'T':
-        //        new Fly( getRandomPos()
+        print("t");
+        new Fly( g_pc->loc + Vec2(100,100) ); //getRandomPos(DIR4_UP) );
         break;
     }
 }

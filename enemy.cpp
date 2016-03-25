@@ -69,7 +69,7 @@ bool Enemy::applyDamage( int dmg ) {
     hp -= dmg ;
     
     if( hp<= 0 ) {
-        createExplosion( loc, 2,3 );
+        createExplosion( loc, 1,2 );
         g_kill_sound->play();
         to_clean = true;
         return true;

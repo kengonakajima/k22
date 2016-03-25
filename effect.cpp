@@ -56,7 +56,7 @@ bool Particle::prop2DPoll(double dt){
 
 
 
-Particle *createExplosion(Vec2 loc, float scl, float dur_rate, bool local ){
+Particle *createExplosion(Vec2 loc, float scl, float dur_rate ){
     Particle *e = new Particle(loc,1*scl,2*scl,0, 0.05 * dur_rate,0.1*dur_rate, B_ATLAS_EXPLOSION, g_base_deck, 0 );
     return e;
 }

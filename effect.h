@@ -28,7 +28,7 @@ public:
 };
 
 
-Particle *createExplosion(Vec2 loc, float scl, float dur_rate, bool local=true ); 
+Particle *createExplosion(Vec2 loc, float scl, float dur_rate ); 
 
 
 void stopEffect();
