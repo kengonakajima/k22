@@ -37,7 +37,7 @@ public:
     virtual void onBeam( Beam *b, int dmg ) {}
     virtual void onKill() {}
     virtual void onTimeout() {}
-    virtual void onTouchWall( Vec2 nextloc, int hitbits, bool nxok, bool nyok );
+    virtual bool onWorldOut() { return false; };
     
     bool applyDamage( int dmg );
     
@@ -78,6 +78,7 @@ public:
     double turn_at;
     Fly( Vec2 lc );
     virtual bool enemyPoll(double dt);
+    virtual void onKill();    
 };
 
 typedef enum {

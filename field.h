@@ -89,6 +89,7 @@ public:
     }
 
     Pos2 getRespawnPoint();
+    bool checkOnShip(Vec2 at, float bodysize );
     
     //
     static const int WALKABLE_BIT_HIT_RT = 8;

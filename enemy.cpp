@@ -62,6 +62,7 @@ void Enemy::notifyHitBeam( Beam *b, int dmg ) {
     bool killed = applyDamage(dmg);
     if(killed) {
         // Destroyed!
+        onKill();
     } else {
         g_beamhit_sound->play();
     }
@@ -97,9 +98,6 @@ Enemy *Enemy::getNearestShootable( Vec2 from ) {
     return out;
 }
 
-void Enemy::onTouchWall( Vec2 nextloc, int hitbits, bool nxok, bool nyok ) {
-    to_clean = true;
-}
 
 /////////////////////////////
 
@@ -120,7 +118,10 @@ void Worm::onBeam( Beam *b, int dmg ) {
 bool Worm::enemyPoll( double dt ) {
     // Get stronger when walk on ENHANCER
     Cell *c = g_fld->get(loc);
-    if(!c)return false;
+    if(!c){
+        print("asdkjfalksdjfas");
+        return false;
+    }
     
     if( accum_time < rest_until ) {
         v *= 0;
@@ -215,9 +216,12 @@ bool Fly::enemyPoll(double dt) {
     }
     return true;
 }
-
-
-
+void Fly::onKill() {
+    if( g_fld->checkOnShip(loc,body_size) ) {
+        Egg *e = new Egg(loc);
+        print("xx egg:%p",e);
+    }
+}
 
 /////////////////////
 
