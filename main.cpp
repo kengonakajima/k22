@@ -13,6 +13,7 @@
 #include "char.h"
 #include "pc.h"
 #include "mapview.h"
+#include "conf.h"
 
 MoyaiClient *g_moyai_client;
 Viewport *g_viewport;
@@ -37,7 +38,7 @@ Pad *g_pad;
 
 GLFWwindow *g_window;
 
-static const int SCRW=1024, SCRH=768;
+
 
 Field *g_fld;
 MapView *g_mapview;
@@ -45,9 +46,18 @@ MapView *g_mapview;
 PC *g_pc; // to be removed
 
 /////////////
-
+void debugKeyPressed( int key ) {
+    switch(key) {
+    case 'T':
+        //        new Fly( getRandomPos()
+        break;
+    }
+}
 void keyboardCallback( GLFWwindow *window, int key, int scancode, int action, int mods ) {
     g_keyboard->update( key, action, mods & GLFW_MOD_SHIFT, mods & GLFW_MOD_CONTROL, mods & GLFW_MOD_ALT );
+    if(action) {
+        debugKeyPressed(key);
+    }
 }
 void mouseButtonCallback( GLFWwindow *window, int button, int action, int mods ) {
     g_mouse->updateButton( button, action, mods & GLFW_MOD_SHIFT, mods & GLFW_MOD_CONTROL, mods & GLFW_MOD_ALT );
@@ -197,9 +207,9 @@ void gameInit() {
         exit(0);
     }
 
-    g_fld = new Field(64,64);
+    g_fld = new Field(FIELD_W,FIELD_H);
     g_fld->generate();
-    g_mapview = new MapView(64,64);
+    g_mapview = new MapView(FIELD_W,FIELD_H);
     g_mapview->update(g_fld);
     g_field_layer->insertProp(g_mapview);
     g_mapview->setLoc(0,0);

@@ -117,7 +117,7 @@ void Field::generate() {
         for(int x=0;x<l;x++) {
             GROUNDTYPE gt = charToGT( g_ship_data[ship_ind][x] );
             Cell *c = get(x,y);
-            assert(c);
+            if(!c)continue;
             c->gt = gt;
             c->subindex = 0;
             if(gt == GT_HATCH) {
