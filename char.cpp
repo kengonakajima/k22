@@ -22,7 +22,8 @@ Char::~Char() {
 bool Char::prop2DPoll( double dt ) {
     if( charPoll(dt) == false ) return false;
     if( clean_at > 0 && accum_time > clean_at ) return false;
-    if( loc.x < 0 ||  loc.x > g_fld->loc_max.x || loc.y < 0 || loc.y > g_fld->loc_max.y  ) {
+    float mgn = PPC*2;
+    if( loc.x < -mgn ||  loc.x > g_fld->loc_max.x+mgn || loc.y < -mgn || loc.y > g_fld->loc_max.y+mgn  ) {
         return onWorldOut();
     }
     return true;

@@ -51,7 +51,7 @@ MapView *g_mapview;
 
 PC *g_pc; // to be removed
 
-Vec2 getRandomPos( DIR4 d ) {
+Vec2 getRandomEdgePos( DIR4 d ) {
     switch(d) {
     case  DIR4_UP: return Vec2( range(0,SCRW), SCRH+PPC);
     case  DIR4_DOWN: return Vec2( range(0,SCRW), 0-PPC);
@@ -62,8 +62,26 @@ Vec2 getRandomPos( DIR4 d ) {
     }
 }
 
-void pollPopper() {
-    
+void pollPopper(double dt) {
+    static double popper_accum_time=0;
+    popper_accum_time += dt;
+    static double last_pop_at = 0;
+    if( popper_accum_time > last_pop_at + 5 ) {
+        last_pop_at = popper_accum_time;
+        Vec2 at = getRandomEdgePos( randomDir() );
+        int t = irange( 0,100);
+        if( t < 5 ) {
+            new Girev(at);            
+        } else if( t%5==0 ){
+            new Takwashi(at);
+        } else if( t%2==0) {
+            DIR4 d = randomDir();
+            for(int n=0;n<7;n++){
+                Vec2 at = getRandomEdgePos(d);
+                new Fly(at);
+            }
+        }
+    }
 }
 
 /////////////
@@ -136,7 +154,7 @@ void gameUpdate(void) {
     }
 
     pollSpaceBG(dt);
-    pollPopper();
+    pollPopper(dt);
     
     // TODO: implement multiplayer
     Vec2 ctl_move;
@@ -182,7 +200,7 @@ void gameInit() {
 
     g_sound_system = new SoundSystem();
     g_shoot_sound = g_sound_system->newSound( "sounds/shoot.wav", 0.5, false );          // PC shooting sound option 0.        
-    g_shoot_sig_sound = g_sound_system->newSound( "sounds/shoot_sig.wav" ); // Enemy shoots a fast and small missile SIG.
+    g_shoot_sig_sound = g_sound_system->newSound( "sounds/shoot_sig.wav", 0.3, false ); // Enemy shoots a fast and small missile SIG.
     g_kill_sound = g_sound_system->newSound( "sounds/machine_explo.wav", 0.3, false ); // PC shoot and destroy enemy machines.
     g_hurt_sound = g_sound_system->newSound( "sounds/hurt.wav", 0.5, false ); // PC got hurt
     g_beamhit_sound = g_sound_system->newSound( "sounds/beamhithard.wav", 0.5, false ); 
