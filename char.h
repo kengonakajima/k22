@@ -64,6 +64,7 @@ public:
     Vec2 v;
     BEAMTYPE type;
     float hitsz;
+    int ene;
     Beam( Vec2 lc, Vec2 at, BEAMTYPE beamt, int base_index );
     virtual bool charPoll( double dt );
     void updateIndex();

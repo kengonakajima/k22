@@ -57,6 +57,8 @@ bool Enemy::charPoll( double dt ) {
     return true;
 }
 void Enemy::notifyHitBeam( Beam *b, int dmg ) {
+    if( b->ene < 1 ) return;
+    b->ene--;
     if( dmg <= 0 ) return;
     onBeam(b,dmg);
     bool killed = applyDamage(dmg);
@@ -217,9 +219,12 @@ bool Fly::enemyPoll(double dt) {
     return true;
 }
 void Fly::onKill() {
-    if( g_fld->checkOnShip(loc,body_size) ) {
-        Egg *e = new Egg(loc);
-        print("xx egg:%p",e);
+    int n = irange(1,5);
+    for(int i=0;i<n;i++) {
+        Vec2 at = loc.randomize(15);
+        if( g_fld->checkOnShip(at,body_size/2) ) {
+            new Egg(at);
+        }
     }
 }
 

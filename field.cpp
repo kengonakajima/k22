@@ -133,9 +133,5 @@ bool Field::checkOnShip(Vec2 at, float bodysize ) {
     Cell *rt = get(at+Vec2(bodysize,bodysize));
     Cell *lb = get(at+Vec2(-bodysize,-bodysize));
     Cell *rb = get(at+Vec2(bodysize,-bodysize));
-    print("oohoahsdf:%d %d %d %d",
-          ( lt&&lt->isWalkable() ),
-          (rt&&rt->isWalkable() ),
-          (lb&&lb->isWalkable() ),  rb&&rb->isWalkable() );
     return ( lt&&lt->isWalkable() && rt&&rt->isWalkable() && lb&&lb->isWalkable() && rb&&rb->isWalkable() );
 }

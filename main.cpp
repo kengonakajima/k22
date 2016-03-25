@@ -140,7 +140,15 @@ void gameUpdate(void) {
     Vec2 cursor_wloc = screenPosToWorldLoc(cursor_pos);
     Vec2 shootdir = cursor_wloc - g_pc->loc;
     Vec2 ctl_shoot = shootdir.normalize(1.0f);
-    if( !g_mouse->getButton(0) ) ctl_shoot*=0;
+    if( g_mouse->getToggled(0) ) {
+        // Shoot right now
+        g_pc->last_shoot_at = 0;
+        g_mouse->clearToggled(0);
+    } else {
+        if( !g_mouse->getButton(0) ) {
+            ctl_shoot*=0;
+        }
+    }
     g_pc->ideal_v = ctl_move;
     g_pc->shoot_v = ctl_shoot;
         

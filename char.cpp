@@ -90,7 +90,7 @@ Char *Char::getNearestByCategory( Vec2 from, CATEGORY cat, Char *except ) {
 
 
 /////////////////
-Beam::Beam( Vec2 lc, Vec2 at, BEAMTYPE beamtype, int base_index ) : Char( CAT_BEAM, lc, g_base_deck, g_char_layer ), type(beamtype) {
+Beam::Beam( Vec2 lc, Vec2 at, BEAMTYPE beamtype, int base_index ) : Char( CAT_BEAM, lc, g_base_deck, g_char_layer ), type(beamtype),ene(1) {
 
     switch(beamtype) {
     case BEAMTYPE_WIDE:
