@@ -97,6 +97,9 @@ Enemy *Enemy::getNearestShootable( Vec2 from ) {
     return out;
 }
 
+void Enemy::onTouchWall( Vec2 nextloc, int hitbits, bool nxok, bool nyok ) {
+    to_clean = true;
+}
 
 /////////////////////////////
 
@@ -387,7 +390,7 @@ bool Girev::enemyPoll(double dt) {
         turn_at = accum_time + intvl;
         Vec2 tgt;
         if( g_fld->findEnemyAttackTarget( loc, &tgt, MACHINE_SHOOT_DISTANCE) ) {
-            float vel = PPC;
+            float vel = PPC/3;
             v = loc.to(tgt).normalize(vel);
             Bullet::shootFanAt( BLT_SPARIO, loc, tgt, 8, M_PI/8.0 );
         }
@@ -403,7 +406,7 @@ bool Girev::enemyPoll(double dt) {
 Repairer::Repairer( Vec2 lc ) : Enemy(lc, g_base_deck, FLYING ), turn_at(0), spark_at(0) {
     setIndex( B_ATLAS_REPAIRER_BASE );
     v = Vec2(0,0);
-    hp = maxhp = 20;
+    hp = maxhp = 1;
     setScl(24*1.5);
     timeout = ENEMY_DEFAULT_TIMEOUT * 2;
     enemy_type = ET_REPAIRER;

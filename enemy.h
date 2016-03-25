@@ -37,7 +37,7 @@ public:
     virtual void onBeam( Beam *b, int dmg ) {}
     virtual void onKill() {}
     virtual void onTimeout() {}
-
+    virtual void onTouchWall( Vec2 nextloc, int hitbits, bool nxok, bool nyok );
     
     bool applyDamage( int dmg );
     

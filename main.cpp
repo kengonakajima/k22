@@ -66,6 +66,9 @@ Vec2 getRandomPos( DIR4 d ) {
 void debugKeyPressed( int key ) {
     Vec2 at = g_pc->loc + Vec2(100,100); //getRandomPos(DIR4_UP) );
     switch(key) {
+    case 'U':
+        new Girev(at);
+        break;
     case 'Y':
         new Takwashi(at);
         break;
