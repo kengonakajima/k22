@@ -45,6 +45,7 @@ bool MapView::prop2DPoll(double dt) {
 //////////////////////////
 
 Prop2D *g_bg[2];
+Prop2D *g_planet;
 
 void setupSpaceBG() {
     for(int i=0;i<2;i++) {
@@ -55,13 +56,18 @@ void setupSpaceBG() {
         g_bg[i]->setLoc(SCRW/2-dx,SCRH/2);
         g_bg_layer->insertProp(g_bg[i]);
     }
+    g_planet = new Prop2D();
+    g_planet->setTexture(g_planet_tex);
+    g_planet->setScl( g_planet_tex->getSize() *2);
+    g_planet->setLoc(100,100);
+    g_bg_layer->insertProp(g_planet);
 }
 void pollSpaceBG(double dt) {
-    float speed_per_sec = 10;
     for(int i=0;i<2;i++) {
         if( g_bg[i]->loc.x > SCRW+SCRW/2 ) g_bg[i]->loc.x = -SCRW/2;
-        g_bg[i]->loc.x += speed_per_sec * dt;
-
+        g_bg[i]->loc.x += 6 * dt;
     }
+    g_planet->loc.x += 12 * dt;
+    if( g_planet->loc.x > SCRW/2 + g_planet->scl.x ) g_planet->loc.x = -SCRW;
 }
 
