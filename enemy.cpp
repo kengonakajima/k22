@@ -206,7 +206,7 @@ bool Fly::enemyPoll(double dt) {
 
     if( loc.len(g_pc->loc) < PPC/2 ) {
         to_clean = true;
-        g_pc->onPushed(1,this);        
+        g_pc->onAttacked(1,this);        
     }
     return true;
 }

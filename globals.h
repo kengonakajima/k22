@@ -19,6 +19,7 @@ extern ColorReplacerShader *g_eye_col_replacer;
 extern Sound *g_kill_sound;
 extern Sound *g_shoot_sig_sound;
 extern Sound *g_shoot_sound;
+extern Sound *g_hurt_sound;
 
 #define WHITE Color(1,1,1,1)
 #define RED Color(1,0,0,1)

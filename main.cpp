@@ -33,6 +33,7 @@ SoundSystem *g_sound_system;
 Sound *g_shoot_sig_sound;
 Sound *g_kill_sound;
 Sound *g_shoot_sound;
+Sound *g_hurt_sound;
 int g_last_render_cnt ;
 
 
@@ -160,6 +161,7 @@ void gameInit() {
     g_shoot_sound = g_sound_system->newSound( "sounds/shoot.wav", 0.5, false );          // PC shooting sound option 0.        
     g_shoot_sig_sound = g_sound_system->newSound( "sounds/shoot_sig.wav" ); // Enemy shoots a fast and small missile SIG.
     g_kill_sound = g_sound_system->newSound( "sounds/machine_explo.wav", 0.3, false ); // PC shoot and destroy enemy machines.
+    g_hurt_sound = g_sound_system->newSound( "sounds/hurt.wav", 0.5, false ); // PC got hurt
     
     // glfw
     if( !glfwInit() ) {

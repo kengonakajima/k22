@@ -297,6 +297,7 @@ void PC::onAttacked( int dmg, Enemy *e ) {
     }
 
     if( died_at == 0 ) died_at = accum_time;
+    g_hurt_sound->play();
 }
 
 
