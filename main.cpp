@@ -18,10 +18,13 @@
 
 MoyaiClient *g_moyai_client;
 Viewport *g_viewport;
+Layer *g_bg_layer;
 Layer *g_char_layer;
 Layer *g_effect_layer;
 Layer *g_field_layer;
 Texture *g_base_atlas;
+Texture *g_space_bg_tex;
+Texture *g_planet_tex;
 TileDeck *g_base_deck;
 TileDeck *g_girev_deck;
 Camera *g_camera;
@@ -117,6 +120,8 @@ void gameUpdate(void) {
         exit(0);
     }
 
+    pollSpaceBG(dt);
+    
     // TODO: implement multiplayer
     Vec2 ctl_move;
     g_pad->getVec(&ctl_move);
@@ -187,12 +192,17 @@ void gameInit() {
 
     g_field_layer = new Layer();
     g_field_layer->setViewport(g_viewport);
-    g_moyai_client->insertLayer(g_field_layer);
+    g_bg_layer = new Layer();
+    g_bg_layer->setViewport(g_viewport);
     g_char_layer = new Layer();
-    g_moyai_client->insertLayer(g_char_layer);
     g_char_layer->setViewport(g_viewport);    
     g_effect_layer = new Layer();
-    g_moyai_client->insertLayer(g_effect_layer);
+    
+    g_moyai_client->insertLayer(g_bg_layer);
+    g_moyai_client->insertLayer(g_field_layer);    
+    g_moyai_client->insertLayer(g_char_layer);
+    g_moyai_client->insertLayer(g_effect_layer);    
+    
     g_effect_layer->setViewport(g_viewport);
     g_base_atlas = new Texture();
     g_base_atlas->load("./images/k22base1024.png");
@@ -200,6 +210,12 @@ void gameInit() {
     g_base_deck->setTexture(g_base_atlas);
     g_base_deck->setSize(32,42,24,24 );
 
+    g_space_bg_tex = new Texture();
+    g_space_bg_tex->load("./images/spacebg.png");
+    g_planet_tex = new Texture();
+    g_planet_tex->load("./images/kepler22b_blended.png");
+    
+    
     Texture *girevtex = new Texture();
     girevtex->load( "./images/girev64.png");
     g_girev_deck = new TileDeck();
@@ -209,6 +225,7 @@ void gameInit() {
     g_camera = new Camera();
     g_camera->setLoc(SCRW/2,SCRH/2);
 
+    g_bg_layer->setCamera(g_camera);    
     g_char_layer->setCamera(g_camera);
     g_effect_layer->setCamera(g_camera);
     g_field_layer->setCamera(g_camera);
@@ -237,12 +254,13 @@ void gameInit() {
     g_mouse = new Mouse();
     glfwSetMouseButtonCallback( g_window, mouseButtonCallback );
     glfwSetCursorPosCallback( g_window, cursorPosCallback );
-    
+
+    setupSpaceBG();
 }
 
 
 void gameRender() {
-        g_last_render_cnt = g_moyai_client->render();
+    g_last_render_cnt = g_moyai_client->render();
 }
 void gameFinish() {
     glfwTerminate();

@@ -12,5 +12,8 @@ public:
     virtual bool prop2DPoll(double dt);
 };
 
+void pollSpaceBG(double dt);
+void setupSpaceBG();
+
 #endif
 

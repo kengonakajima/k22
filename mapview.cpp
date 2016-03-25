@@ -5,6 +5,7 @@
 #include "field.h"
 #include "globals.h"
 #include "atlas.h"
+#include "conf.h"
 
 MapView::MapView(int w, int h ) : Prop2D() {
     setIndex(-1);
@@ -40,3 +41,27 @@ void MapView::update(Field *f) {
 bool MapView::prop2DPoll(double dt) {
     return true;
 }
+
+//////////////////////////
+
+Prop2D *g_bg[2];
+
+void setupSpaceBG() {
+    for(int i=0;i<2;i++) {
+        g_bg[i] = new Prop2D();
+        g_bg[i]->setTexture(g_space_bg_tex);
+        g_bg[i]->setScl(SCRW+8,SCRH); // +8 for filling gap
+        float dx = SCRW * i;
+        g_bg[i]->setLoc(SCRW/2-dx,SCRH/2);
+        g_bg_layer->insertProp(g_bg[i]);
+    }
+}
+void pollSpaceBG(double dt) {
+    float speed_per_sec = 10;
+    for(int i=0;i<2;i++) {
+        if( g_bg[i]->loc.x > SCRW+SCRW/2 ) g_bg[i]->loc.x = -SCRW/2;
+        g_bg[i]->loc.x += speed_per_sec * dt;
+
+    }
+}
+
