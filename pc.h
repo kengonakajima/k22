@@ -28,6 +28,7 @@ public:
     // Customize look and sounds 
     int hair_base_index, face_base_index, body_base_index;
 
+    double invincible_until;
     
     PC( Vec2 lc );
     virtual bool charPoll( double dt );

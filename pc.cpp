@@ -10,7 +10,7 @@
 #include "globals.h"
 #include "conf.h"
 
-PC::PC(Vec2 lc) : Char(CAT_PC, lc, g_base_deck, g_char_layer ), ideal_v(0,0), dir(DIR4_DOWN), body_size(8), shoot_v(0,0), last_shoot_at(0), knockback_until(0), knockback_v(0,0), equip_prop(NULL), died_at(0), recalled_at(0) {
+PC::PC(Vec2 lc) : Char(CAT_PC, lc, g_base_deck, g_char_layer ), ideal_v(0,0), dir(DIR4_DOWN), body_size(8), shoot_v(0,0), last_shoot_at(0), knockback_until(0), knockback_v(0,0), equip_prop(NULL), died_at(0), recalled_at(0), invincible_until(0) {
     tex_epsilon=0;
     priority = PRIO_CHAR;
 
@@ -230,6 +230,14 @@ bool PC::charPoll( double dt ) {
         }
     }
 
+    if( invincible_until > accum_time ) {
+        bool vis = (int)(accum_time*10)%2;
+        setVisible(vis);
+    } else {
+        setVisible(true);
+    }
+    
+
     // Adjust position
     body_prop->loc = loc;
     face_prop->loc = loc;
@@ -305,6 +313,7 @@ void PC::respawn() {
     Pos2 p = g_fld->getRespawnPoint();
     loc = toCellCenter(p);
     died_at = 0;
+    invincible_until = accum_time + 2;
 }
 
 PC *PC::getNearestPC( Vec2 from ) {
