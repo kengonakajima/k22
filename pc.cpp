@@ -299,6 +299,7 @@ Vec2 PC::calcEquipPosition( DIR4 d ) {
 
 
 void PC::onAttacked( int dmg, Enemy *e ) {
+    if( invincible_until > accum_time ) return;
     if(e) {
         knockback_until = accum_time + 0.2;
         knockback_v = e->loc.to(loc).normalize(PPC*4);
