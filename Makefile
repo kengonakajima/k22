@@ -16,7 +16,7 @@ OUT=k22
 
 all : $(OUT)
 
-$(OUT) : $(OBJS)
+$(OUT) : $(OBJS) $(MOYAILIB)
 	g++ -o $(OUT) $(OBJS) $(LIBFLAGS) 
 
 main.o : main.cpp

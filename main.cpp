@@ -44,6 +44,10 @@ Pad *g_pad;
 
 GLFWwindow *g_window;
 
+bool g_enable_network = true;
+
+RemoteHead *g_rh;
+#define HEADLESS_SERVER_PORT 22222
 
 
 Field *g_fld;
@@ -300,6 +304,26 @@ void gameInit() {
     glfwSetCursorPosCallback( g_window, cursorPosCallback );
 
     setupSpaceBG();
+
+    // network
+
+    if( g_enable_network ) { 
+        Moyai::globalInitNetwork();
+        g_rh = new RemoteHead();
+        if( g_rh->startServer(HEADLESS_SERVER_PORT) == false ) {
+            print("headless server: can't start server. port:%d", HEADLESS_SERVER_PORT );
+            exit(1);
+        }
+        g_moyai_client->setRemoteHead(g_rh);
+        g_rh->setTargetMoyaiClient(g_moyai_client);
+        g_sound_system->setRemoteHead(g_rh);
+        g_rh->setTargetSoundSystem(g_sound_system);
+        g_keyboard->setRemoteHead(g_rh);
+        g_rh->setTargetKeyboard(g_keyboard);
+        g_mouse->setRemoteHead(g_rh);
+        g_rh->setTargetMouse(g_mouse);
+    }
+        
 }
 
 
