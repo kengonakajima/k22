@@ -232,7 +232,7 @@ void gameInit() {
     glClearColor(0.2,0.2,0.2,1);
 
 
-    g_moyai_client = new MoyaiClient(g_window);
+    g_moyai_client = new MoyaiClient(g_window,SCRW,SCRH);
 
     g_viewport = new Viewport();
     g_viewport->setSize(SCRW,SCRH); // set actual framebuffer size to output
