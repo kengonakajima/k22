@@ -3,7 +3,10 @@
 
 class Debris;
 class Enemy;
-
+class Client;
+class Keyboard;
+class Mouse;
+class Pad;
 
 class PC : public Char {
 public:
@@ -29,13 +32,19 @@ public:
     int hair_base_index, face_base_index, body_base_index;
 
     double invincible_until;
+    Client *cl; // null if local
+
+    Mouse *mouse;
+    Keyboard *keyboard;
+    Pad *pad;
     
-    PC( Vec2 lc );
+    PC( Client *cl );
     virtual bool charPoll( double dt );
 
     virtual void onPushed( int dmg, Enemy *e ) {};
     virtual bool pcPoll( double dt ) { return true; }
 
+    bool isLocal() { return (cl==0); }
     
     void onAttacked(int dmg, Enemy *e );
 

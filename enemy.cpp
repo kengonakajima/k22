@@ -142,24 +142,29 @@ bool Worm::enemyPoll( double dt ) {
         }
     }
 
-    // Shoot
-    if( accum_time > shoot_at ) {
-        if( shooter && range(0,100) < 20 ) {
-            new Bullet( BLT_GOOBALL, loc, g_pc->loc );
-            v *= 0;
-            shoot_at = accum_time + range(1,3);
-        } 
-    }
     updateDefaultRightFacedRot(v);
+    
+    PC *nearestpc = getNearestPC(loc);
+    if( nearestpc) { 
+        // Shoot
+        if( accum_time > shoot_at ) {
+            if( shooter && range(0,100) < 20 ) {
+                new Bullet( BLT_GOOBALL, loc, nearestpc->loc );
+                v *= 0;
+                shoot_at = accum_time + range(1,3);
+            } 
+        }
 
-    // Direct damage on touching PC
-    if( hit(g_pc,PPC/4) && last_hit_at < accum_time - 0.5 ) {
-        last_hit_at = accum_time;
-        turn_at = accum_time + KNOCKBACK_DELAY;
-        int dmg = 1;
-        g_pc->onAttacked(dmg, this);
-        v = loc.to(g_pc->loc).normalize( -PPC * 10 );
-        //        g_wormbite_sound->play();
+
+        // Direct damage on touching PC
+        if( hit(nearestpc,PPC/4) && last_hit_at < accum_time - 0.5 ) {
+            last_hit_at = accum_time;
+            turn_at = accum_time + KNOCKBACK_DELAY;
+            int dmg = 1;
+            nearestpc->onAttacked(dmg, this);
+            v = loc.to(nearestpc->loc).normalize( -PPC * 10 );
+            //        g_wormbite_sound->play();
+        }
     }
     return true;
 }
@@ -212,9 +217,12 @@ bool Fly::enemyPoll(double dt) {
     v += vv * dt;
     v -= v * dt * 0.5;
 
-    if( loc.len(g_pc->loc) < PPC/2 ) {
-        to_clean = true;
-        g_pc->onAttacked(1,this);        
+    PC *nearestpc = getNearestPC(loc);
+    if(nearestpc) {
+        if( loc.len(nearestpc->loc) < PPC/2 ) {
+            to_clean = true;
+            nearestpc->onAttacked(1,this);        
+        }
     }
     return true;
 }
@@ -289,9 +297,12 @@ bool Bullet::enemyPoll( double dt ) {
         setRot( accum_time * rot_speed );
     }
 
-    if( loc.len(g_pc->loc) < PPC/3 ) {
-        g_pc->onAttacked(1, this);
-        return false;
+    PC *nearestpc = getNearestPC(loc);
+    if(nearestpc) {
+        if( loc.len(nearestpc->loc) < PPC/3 ) {
+            nearestpc->onAttacked(1, this);
+            return false;
+        }
     }
 
     if( bullet_type == BLT_GOOBALL ) {

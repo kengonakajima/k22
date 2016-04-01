@@ -38,9 +38,6 @@ Sound *g_beamhit_sound;
 int g_last_render_cnt ;
 
 
-Mouse *g_mouse;
-Keyboard *g_keyboard;
-Pad *g_pad;
 
 GLFWwindow *g_window;
 
@@ -53,8 +50,57 @@ RemoteHead *g_rh;
 Field *g_fld;
 MapView *g_mapview;
 
-PC *g_pc; // to be removed
+ObjectPool<PC> g_pc_cl_pool; // client idから検索
 
+PC *addPC( Client *cl ) {
+    PC *pc = g_pc_cl_pool.get(cl->id);
+    if(pc) {
+        assertmsg(false, "can't add a pc twice. id:%d",cl->id);
+    }
+    pc = new PC(cl);
+    pc->respawn();
+    g_pc_cl_pool.set(cl->id,pc);
+    print("added a client[%d] to pc pool", cl->id );
+    return pc;
+}
+// use client id is 0
+void addLocalPC( PC *to_add ) {
+    to_add->respawn();
+    g_pc_cl_pool.set(0,to_add);
+}
+void delPC( PC *pc ) {
+    PC *found = g_pc_cl_pool.get( pc->cl->id );
+    if(!found) {
+        assertmsg( false, "can't find a clid:%d in pc pool", pc->cl->id );
+    }
+    g_pc_cl_pool.del(pc->cl->id);
+    delete pc;
+}
+PC *getPC(Client *cl) {
+    return g_pc_cl_pool.get(cl->id);
+}
+PC *getLocalPC() {
+    for( std::unordered_map<unsigned int,PC*>::iterator it = g_pc_cl_pool.idmap.begin(); it != g_pc_cl_pool.idmap.end(); ++it ) {
+        PC *pc = it->second;
+        if(pc->cl == 0) {
+            return pc;            
+        }
+    }
+    return NULL;
+}
+PC *getNearestPC(Vec2 from) {
+    PC *out=0;
+    float distance = 9999999999999;
+    for( std::unordered_map<unsigned int,PC*>::iterator it = g_pc_cl_pool.idmap.begin(); it != g_pc_cl_pool.idmap.end(); ++it ) {
+        PC *pc = it->second;
+        float d = pc->loc.len(from);
+        if(d<distance) {
+            distance = d;
+            out = pc;            
+        }
+    }
+    return out;
+}
 Vec2 getRandomEdgePos( DIR4 d ) {
     switch(d) {
     case  DIR4_UP: return Vec2( range(0,SCRW), SCRH+PPC);
@@ -89,8 +135,8 @@ void pollPopper(double dt) {
 }
 
 /////////////
-void debugKeyPressed( int key ) {
-    Vec2 at = g_pc->loc + Vec2(100,100); //getRandomPos(DIR4_UP) );
+void debugKeyPressed( PC *pc, int key ) {    
+    Vec2 at = pc->loc + Vec2(100,100); //getRandomPos(DIR4_UP) );
     switch(key) {
     case 'I':
         new Egg(at);        
@@ -107,17 +153,24 @@ void debugKeyPressed( int key ) {
     }
 }
 void keyboardCallback( GLFWwindow *window, int key, int scancode, int action, int mods ) {
-    g_keyboard->update( key, action, mods & GLFW_MOD_SHIFT, mods & GLFW_MOD_CONTROL, mods & GLFW_MOD_ALT );
+    PC *pc = getLocalPC();
+    if(!pc) return;
+    pc->keyboard->update( key, action, mods & GLFW_MOD_SHIFT, mods & GLFW_MOD_CONTROL, mods & GLFW_MOD_ALT );
     if(action) {
-        debugKeyPressed(key);
+        debugKeyPressed(pc,key);
     }
 }
 void mouseButtonCallback( GLFWwindow *window, int button, int action, int mods ) {
-    g_mouse->updateButton( button, action, mods & GLFW_MOD_SHIFT, mods & GLFW_MOD_CONTROL, mods & GLFW_MOD_ALT );
+    PC *pc = getLocalPC();
+    if(!pc)return;
+    pc->mouse->updateButton( button, action, mods & GLFW_MOD_SHIFT, mods & GLFW_MOD_CONTROL, mods & GLFW_MOD_ALT );
 }
 void cursorPosCallback( GLFWwindow *window, double x, double y ) {
-    g_mouse->updateCursorPosition( x,y);
+    PC *pc = getLocalPC();
+    if(!pc)return;
+    pc->mouse->updateCursorPosition( x,y);
 }
+
 
 // Assuming camera is not moving (always 0,0 in center of the screen)
 Vec2 screenPosToWorldLoc( Vec2 scrpos ) {
@@ -137,7 +190,6 @@ void gameUpdate(void) {
     frame_counter ++;
 
     glfwPollEvents();
-    g_pad->readKeyboard(g_keyboard);
     
     int cnt = g_moyai_client->poll(dt);
 
@@ -159,26 +211,7 @@ void gameUpdate(void) {
 
     pollSpaceBG(dt);
     pollPopper(dt);
-    
-    // TODO: implement multiplayer
-    Vec2 ctl_move;
-    g_pad->getVec(&ctl_move);
-    Vec2 cursor_pos = g_mouse->getCursorPos();
-    Vec2 cursor_wloc = screenPosToWorldLoc(cursor_pos);
-    Vec2 shootdir = cursor_wloc - g_pc->loc;
-    Vec2 ctl_shoot = shootdir.normalize(1.0f);
-    if( g_mouse->getToggled(0) ) {
-        // Shoot right now
-        g_pc->last_shoot_at = 0;
-        g_mouse->clearToggled(0);
-    } else {
-        if( !g_mouse->getButton(0) ) {
-            ctl_shoot*=0;
-        }
-    }
-    g_pc->ideal_v = ctl_move;
-    g_pc->shoot_v = ctl_shoot;
-        
+            
     last_poll_at = t;
 }
 
@@ -190,7 +223,22 @@ void winclose_callback( GLFWwindow *w ){
 void glfw_error_cb( int code, const char *desc ) {
     print("glfw_error_cb. code:%d desc:'%s'", code, desc );
 }
-
+void onConnectCallback( RemoteHead *rh, Client *cl ) {
+    print("onConnectCallback: clid:%d",cl->id);
+    addPC(cl);
+}
+void onRemoteKeyboardCallback( Client *cl, int kc, int act, int modshift, int modctrl, int modalt ) {
+    PC *pc = getPC(cl);
+    if(pc) pc->keyboard->update(kc,act,modshift,modctrl,modalt);
+}
+void onRemoteMouseButtonCallback( Client *cl, int btn, int act, int modshift, int modctrl, int modalt ) {
+    PC *pc = getPC(cl);
+    pc->mouse->updateButton( btn, act, modshift, modctrl, modalt );
+}
+void onRemoteMouseCursorCallback( Client *cl, int x, int y ) {
+    PC *pc = getPC(cl);
+    pc->mouse->updateCursorPosition(x,y);
+}
 
 void gameInit() {
     print("program start");
@@ -292,14 +340,9 @@ void gameInit() {
     g_field_layer->insertProp(g_mapview);
     g_mapview->setLoc(0,0);
 
-    g_pc = new PC( Vec2(0,0) );
-    g_pc->respawn();
 
     // input
-    g_keyboard = new Keyboard();
     glfwSetKeyCallback( g_window, keyboardCallback );
-    g_pad = new Pad();
-    g_mouse = new Mouse();
     glfwSetMouseButtonCallback( g_window, mouseButtonCallback );
     glfwSetCursorPosCallback( g_window, cursorPosCallback );
 
@@ -318,12 +361,15 @@ void gameInit() {
         g_rh->setTargetMoyaiClient(g_moyai_client);
         g_sound_system->setRemoteHead(g_rh);
         g_rh->setTargetSoundSystem(g_sound_system);
-        g_keyboard->setRemoteHead(g_rh);
-        g_rh->setTargetKeyboard(g_keyboard);
-        g_mouse->setRemoteHead(g_rh);
-        g_rh->setTargetMouse(g_mouse);
+        g_rh->setOnConnectCallback(onConnectCallback);
+        g_rh->setOnKeyboardCallback(onRemoteKeyboardCallback);
+        g_rh->setOnMouseButtonCallback(onRemoteMouseButtonCallback);
+        g_rh->setOnMouseCursorCallback(onRemoteMouseCursorCallback);
     }
-        
+
+    // game
+    PC *local_pc = new PC(NULL);
+    addLocalPC(local_pc);
 }
 
 

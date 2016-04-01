@@ -26,10 +26,13 @@ extern Sound *g_beamhit_sound;
 #define RED Color(1,0,0,1)
 #define BLUE Color(0,0,1,1)
 
-// to be removed
-class PC;
-extern PC *g_pc;
 
 extern Texture *g_planet_tex;
 extern Texture *g_space_bg_tex;
+
+Vec2 screenPosToWorldLoc( Vec2 scrpos );
+class PC;
+PC *getNearestPC(Vec2 from);
+
+
 #endif

@@ -10,7 +10,7 @@
 #include "globals.h"
 #include "conf.h"
 
-PC::PC(Vec2 lc) : Char(CAT_PC, lc, g_base_deck, g_char_layer ), ideal_v(0,0), dir(DIR4_DOWN), body_size(8), shoot_v(0,0), last_shoot_at(0), knockback_until(0), knockback_v(0,0), equip_prop(NULL), died_at(0), recalled_at(0), invincible_until(0) {
+PC::PC(Client *cl) : Char(CAT_PC, Vec2(0,0), g_base_deck, g_char_layer ), ideal_v(0,0), dir(DIR4_DOWN), body_size(8), shoot_v(0,0), last_shoot_at(0), knockback_until(0), knockback_v(0,0), equip_prop(NULL), died_at(0), recalled_at(0), invincible_until(0), cl(cl), mouse(0), keyboard(0), pad(0) {
     tex_epsilon=0;
     priority = PRIO_CHAR;
 
@@ -46,12 +46,35 @@ PC::PC(Vec2 lc) : Char(CAT_PC, lc, g_base_deck, g_char_layer ), ideal_v(0,0), di
     face_prop->priority = 2;
     hair_prop->priority = 3;
     equip_prop->priority = 4; // Changes depending on direction of PC
-    
+
+    mouse = new Mouse();
+    keyboard = new Keyboard();
+    pad = new Pad();
 }
 
 bool PC::charPoll( double dt ) {
     
     if( pcPoll(dt) == false ) return false;
+
+    pad->readKeyboard(keyboard);
+    Vec2 ctl_move;
+    pad->getVec(&ctl_move);
+    Vec2 cursor_pos = mouse->getCursorPos();
+    Vec2 cursor_wloc = screenPosToWorldLoc(cursor_pos);
+    Vec2 shootdir = cursor_wloc - loc;
+    Vec2 ctl_shoot = shootdir.normalize(1.0f);
+    if( mouse->getToggled(0) ) {
+        // Shoot right now
+        last_shoot_at = 0;
+        mouse->clearToggled(0);
+    } else {
+        if( !mouse->getButton(0) ) {
+            ctl_shoot*=0;
+        }
+    }
+    ideal_v = ctl_move;
+    shoot_v = ctl_shoot;
+
     
     //
     DIR4 d = ideal_v.toDir();
