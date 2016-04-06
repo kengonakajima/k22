@@ -10,7 +10,7 @@
 #include "globals.h"
 #include "conf.h"
 
-PC::PC(Client *cl) : Char(CAT_PC, Vec2(0,0), g_base_deck, g_char_layer ), ideal_v(0,0), dir(DIR4_DOWN), body_size(8), shoot_v(0,0), last_shoot_at(0), knockback_until(0), knockback_v(0,0), equip_prop(NULL), died_at(0), recalled_at(0), invincible_until(0), cl(cl), mouse(0), keyboard(0), pad(0) {
+PC::PC(Client *cl) : Char(CAT_PC, Vec2(0,0), g_base_deck, g_char_layer ), ideal_v(0,0), dir(DIR4_DOWN), body_size(8), shoot_v(0,0), last_shoot_at(0), knockback_until(0), knockback_v(0,0), equip_prop(NULL), died_at(0), recalled_at(0), invincible_until(0), cl(cl), mouse(0), keyboard(0), pad(0), camera(0) {
     tex_epsilon=0;
     priority = PRIO_CHAR;
 
@@ -50,6 +50,22 @@ PC::PC(Client *cl) : Char(CAT_PC, Vec2(0,0), g_base_deck, g_char_layer ), ideal_
     mouse = new Mouse();
     keyboard = new Keyboard();
     pad = new Pad();
+    print("qaskdjfhaklsjdhflkajshdf:%d %d",g_enable_single_screen, !g_enable_single_screen);    
+    if( !g_enable_single_screen ) {
+        print("aksdjflaskdjlfkasjdf");
+        camera = new Camera(cl);
+
+        // local PC is for ease of development. It has null Client pointer
+        if(cl) {
+            g_char_layer->addDynamicCamera(camera);
+            g_effect_layer->addDynamicCamera(camera);
+            g_field_layer->addDynamicCamera(camera);
+        } else {
+            g_char_layer->setCamera(camera);
+            g_effect_layer->setCamera(camera);
+            g_field_layer->setCamera(camera);        
+        }
+    }
 }
 
 bool PC::charPoll( double dt ) {
@@ -60,7 +76,7 @@ bool PC::charPoll( double dt ) {
     Vec2 ctl_move;
     pad->getVec(&ctl_move);
     Vec2 cursor_pos = mouse->getCursorPos();
-    Vec2 cursor_wloc = screenPosToWorldLoc(cursor_pos);
+    Vec2 cursor_wloc = screenPosToWorldLoc(cursor_pos,camera);
     Vec2 shootdir = cursor_wloc - loc;
     Vec2 ctl_shoot = shootdir.normalize(1.0f);
     if( mouse->getToggled(0) ) {
@@ -268,7 +284,10 @@ bool PC::charPoll( double dt ) {
 
     // try to shoot
     tryShoot();
-    
+
+    // move camera
+    if(camera) camera->setLoc(loc); // camera is null when single_screen
+
     return true;
 }
 Vec2 PC::getHandLocalLoc(Vec2 direction) {

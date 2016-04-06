@@ -27,7 +27,7 @@ Texture *g_space_bg_tex;
 Texture *g_planet_tex;
 TileDeck *g_base_deck;
 TileDeck *g_girev_deck;
-Camera *g_camera;
+Camera *g_static_bg_camera;
 ColorReplacerShader *g_eye_col_replacer;
 SoundSystem *g_sound_system;
 Sound *g_shoot_sig_sound;
@@ -37,7 +37,7 @@ Sound *g_hurt_sound;
 Sound *g_beamhit_sound;
 int g_last_render_cnt ;
 
-
+bool g_enable_single_screen = false;
 
 GLFWwindow *g_window;
 
@@ -74,7 +74,7 @@ void delPC( PC *pc ) {
         assertmsg( false, "can't find a clid:%d in pc pool", pc->cl->id );
     }
     g_pc_cl_pool.del(pc->cl->id);
-    delete pc;
+    pc->to_clean = true;
 }
 PC *getPC(Client *cl) {
     return g_pc_cl_pool.get(cl->id);
@@ -155,6 +155,7 @@ void debugKeyPressed( PC *pc, int key ) {
 void keyboardCallback( GLFWwindow *window, int key, int scancode, int action, int mods ) {
     PC *pc = getLocalPC();
     if(!pc) return;
+    print("keyboardCallback pcid:%d",pc->id);
     pc->keyboard->update( key, action, mods & GLFW_MOD_SHIFT, mods & GLFW_MOD_CONTROL, mods & GLFW_MOD_ALT );
     if(action) {
         debugKeyPressed(pc,key);
@@ -173,8 +174,9 @@ void cursorPosCallback( GLFWwindow *window, double x, double y ) {
 
 
 // Assuming camera is not moving (always 0,0 in center of the screen)
-Vec2 screenPosToWorldLoc( Vec2 scrpos ) {
-    return Vec2( scrpos.x - SCRW/2, (scrpos.y - SCRH/2)*-1 ) + g_camera->loc;
+Vec2 screenPosToWorldLoc( Vec2 scrpos, Camera *cam ) {
+    if(!cam) cam = g_static_bg_camera;
+    return Vec2( scrpos.x - SCRW/2, (scrpos.y - SCRH/2)*-1 ) + cam->loc;
 }
 
 //////
@@ -211,7 +213,7 @@ void gameUpdate(void) {
 
     pollSpaceBG(dt);
     pollPopper(dt);
-            
+
     last_poll_at = t;
 }
 
@@ -318,13 +320,16 @@ void gameInit() {
     g_girev_deck->setTexture(girevtex);
     g_girev_deck->setSize(1,1,64,64);
     
-    g_camera = new Camera();
-    g_camera->setLoc(SCRW/2,SCRH/2);
+    g_static_bg_camera = new Camera();
+    g_static_bg_camera->setLoc(SCRW/2,SCRH/2);
 
-    g_bg_layer->setCamera(g_camera);    
-    g_char_layer->setCamera(g_camera);
-    g_effect_layer->setCamera(g_camera);
-    g_field_layer->setCamera(g_camera);
+    g_bg_layer->setCamera(g_static_bg_camera);    
+    if( g_enable_single_screen ) {
+        g_field_layer->setCamera(g_static_bg_camera);
+        g_char_layer->setCamera(g_static_bg_camera);
+        g_effect_layer->setCamera(g_static_bg_camera);
+    }
+
 
     // Eye colors
     g_eye_col_replacer = new ColorReplacerShader();
@@ -385,6 +390,12 @@ void gameFinish() {
 #if !(TARGET_IPHONE_SIMULATOR ||TARGET_OS_IPHONE)        
 int main(int argc, char **argv )
 {
+    if( argc == 2 ) {
+        if( strcmp(argv[1], "--singlescreen" ) == 0 ) {
+            g_enable_single_screen = true;
+        }
+    }
+    
     gameInit();
     while( !glfwWindowShouldClose(g_window) ){
         gameUpdate();

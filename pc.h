@@ -37,6 +37,7 @@ public:
     Mouse *mouse;
     Keyboard *keyboard;
     Pad *pad;
+    Camera *camera;
     
     PC( Client *cl );
     virtual bool charPoll( double dt );

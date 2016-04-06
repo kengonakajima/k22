@@ -30,9 +30,10 @@ extern Sound *g_beamhit_sound;
 extern Texture *g_planet_tex;
 extern Texture *g_space_bg_tex;
 
-Vec2 screenPosToWorldLoc( Vec2 scrpos );
+Vec2 screenPosToWorldLoc( Vec2 scrpos, Camera *cam );
 class PC;
 PC *getNearestPC(Vec2 from);
 
+extern bool g_enable_single_screen;
 
 #endif
