@@ -14,5 +14,6 @@ bash$ moyai/viewer # Connects to localhost TCP 22222
 
 
 # Licence notes
-
+- This game is licensed under MIT license.
+- FMOD dynamic libraries are licensed under FMOD's non-commercial license.
 - All space images are from nasa.gov (see http://www.nasa.gov/multimedia/guidelines/index.html )
