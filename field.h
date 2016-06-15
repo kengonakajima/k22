@@ -103,7 +103,6 @@ public:
     void get8(Pos2 center, Cell *out[8] );
     void get4(Pos2 center, Cell *out[4] );
     void getCorner4( Vec2 center, float sz, Cell **lb, Cell **rb, Cell **lt, Cell **rt );
-    void getRectCorner(Vec2 center, float sz, Cell *out[4]);
 
     bool findEnemyAttackTarget( Vec2 center, Vec2 *tgt, float distance, float building_target = 15 );
 
