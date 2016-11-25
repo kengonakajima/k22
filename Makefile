@@ -2,8 +2,8 @@ SRCS=main.cpp pc.cpp char.cpp field.cpp enemy.cpp effect.cpp shipdata.cpp mapvie
 
 OBJS=$(SRCS:.cpp=.o)
 MOYAILIB=./moyai/libmoyaicl.a
-UNTZLIB=./moyai/untz/libuntz.a
-GLFWLIB=./moyai/glfw-3.1.2/src/libglfw3.a
+GLFWLIB=./moyai/glfw-3.2/src/libglfw3.a
+ALUTLIB=./moyai/libalut.a
 SNAPPYLIB=./moyai/libsnappy.a
 FTGLLIB=./moyai/libftgl.a
 FTLIB=./moyai/freetype-2.4.10/objs/.libs/libfreetype.a
@@ -11,9 +11,9 @@ BZ2LIB=./moyai/bzip2-1.0.6/libbz2.a
 ZLIB=./moyai/zlib-1.2.7/libz.a
 UVLIB=/usr/local/lib/libuv.a
 OGGLIB=/usr/local/lib/libvorbis.a /usr/local/lib/libvorbisfile.a /usr/local/lib/libogg.a
-FRAMEWORKS=-framework Cocoa -framework IOKit -framework OpenGL -framework CoreFoundation -framework CoreVideo -framework CoreMedia -framework AudioToolbox
-LIBFLAGS=-L/usr/local/lib -ljpeg -m64  $(UNTZLIB) $(MOYAILIB) $(GLFWLIB) $(SNAPPYLIB) $(FTGLLIB) $(FTLIB) $(BZ2LIB) $(ZLIB) $(UVLIB) $(FRAMEWORKS) $(OGGLIB)
-CFLAGS=-O0 -g  -Wall -m64  -I./moyai/glfw-3.1.2/include -I./moyai -I/usr/local/include
+FRAMEWORKS=-framework Cocoa -framework IOKit -framework OpenGL -framework CoreFoundation -framework CoreVideo -framework CoreMedia -framework AudioToolbox -framework OpenAL
+LIBFLAGS=-L/usr/local/lib -ljpeg -m64  $(MOYAILIB) $(GLFWLIB) $(SNAPPYLIB) $(FTGLLIB) $(FTLIB) $(BZ2LIB) $(ZLIB) $(UVLIB) $(FRAMEWORKS) $(OGGLIB) $(ALUTLIB)
+CFLAGS=-O0 -g  -Wall -m64  -I./moyai/glfw-3.2/include -I./moyai -I/usr/local/include
 
 OUT=k22
 
