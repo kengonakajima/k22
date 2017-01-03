@@ -3,17 +3,20 @@
 
 class Field;
 
-class MapView : public Prop2D {
+class Chunk;
+class MapView {
 public:
-    Grid *grid;
+    Chunk **chunks;
+    int chw,chh;
     MapView(int w, int h);
     ~MapView();
+    int chunkIndex(int chx, int chy) { return chx + chy*chw;}
     void update(Field*f);
-    virtual bool prop2DPoll(double dt);
 };
 
 void pollSpaceBG(double dt);
 void setupSpaceBG();
+int groundTypeToBaseIndex( GROUNDTYPE gt ) ;
 
 #endif
 

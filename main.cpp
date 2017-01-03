@@ -369,8 +369,6 @@ void gameInit() {
     g_fld->generate();
     g_mapview = new MapView(FIELD_W,FIELD_H);
     g_mapview->update(g_fld);
-    g_field_layer->insertProp(g_mapview);
-    g_mapview->setLoc(0,0);
 
 
     // input

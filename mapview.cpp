@@ -1,21 +1,56 @@
 
 #include "moyai/client.h"
-#include "mapview.h"
 #include "dimension.h"
-#include "field.h"
 #include "globals.h"
+#include "field.h"
+#include "mapview.h"
+
 #include "atlas.h"
 #include "conf.h"
 
-MapView::MapView(int w, int h ) : Prop2D() {
-    setIndex(-1);
-    grid = new Grid(w,h);
-    grid->setDeck(g_base_deck);
-    setScl(24,24);
-    addGrid(grid);
+////////////////////////////
+
+class Chunk : public Prop2D {
+public:
+    static const int SZ=8;
+    Grid *g;
+    int chx,chy;
+    Chunk( int chx, int chy ) : Prop2D(),chx(chx),chy(chy) {
+        g = new Grid(SZ,SZ);
+        addGrid(g);
+        g->setDeck(g_base_deck);
+        setScl(24);
+        setLoc(chx*SZ*24,chy*SZ*24);
+        g_field_layer->insertProp(this);
+    }
+    void loadCell(Field *f) {
+        for(int y=0;y<SZ;y++) {
+            for(int x=0;x<SZ;x++) {
+                Cell *c = f->get(chx*SZ+x,chy*SZ+y);
+                g->set(x,y,groundTypeToBaseIndex(c->gt));
+            }
+        }
+    }
+    virtual bool prop2DPoll(double dt) {
+        return true;
+    }
+};
+
+
+////////////////////////////
+
+MapView::MapView(int w, int h ) {
+    chw = w/CHUNKSZ;
+    chh = h/CHUNKSZ;
+    chunks = (Chunk**)MALLOC( sizeof(Chunk*) * chw * chh );
+    for(int chy=0;chy<chh;chy++) {
+        for(int chx=0;chx<chw;chx++) {
+            Chunk *ch = new Chunk(chx,chy);
+            chunks[ chunkIndex(chx,chy) ] = ch;
+        }
+    }
 }
 MapView::~MapView() {
-    if(grid) delete grid;
 }
 int groundTypeToBaseIndex( GROUNDTYPE gt ) {
     switch(gt) {
@@ -28,17 +63,12 @@ int groundTypeToBaseIndex( GROUNDTYPE gt ) {
     }
 }
 void MapView::update(Field *f) {
-    for(int y=0;y<f->height;y++) {
-        for(int x=0;x<f->width;x++) {
-            Cell *c = f->get(x,y);
-            assert(c);
-            int base_ind = groundTypeToBaseIndex(c->gt);
-            grid->set(x,y,base_ind);
+    for(int chy=0;chy<chh;chy++) {
+        for(int chx=0;chx<chw;chx++) {
+            Chunk *ch = chunks[ chunkIndex(chx,chy) ];
+            ch->loadCell(f);
         }
     }
-}
-bool MapView::prop2DPoll(double dt) {
-    return true;
 }
 
 //////////////////////////
