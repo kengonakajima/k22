@@ -21,16 +21,14 @@ typedef enum {
 } OPENNESS;
 
 typedef enum {
-    GT_SPACE = 0, // subindex == 0
-    GT_PANEL = 1, // use subindex
-    GT_HATCH = 2, // use subindex
+    GT_SPACE = 0,
+    GT_PANEL = 1,
+    GT_HATCH = 2,
 } GROUNDTYPE;
     
 class Cell {
 public:
     GROUNDTYPE gt;
-    int subindex;
-
     inline bool isWalkable() {
         return gt == GT_PANEL || gt == GT_HATCH;
     }
@@ -107,6 +105,9 @@ public:
     bool findEnemyAttackTarget( Vec2 center, Vec2 *tgt, float distance, float building_target = 15 );
 
     void generate();
+    void learn();
+    void makeRoom(Pos2 lb,Pos2 rt);
+    void makeCorridor(Pos2 p);
 };
 
 

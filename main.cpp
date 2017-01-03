@@ -107,15 +107,8 @@ PC *getNearestPC(Vec2 from) {
     }
     return out;
 }
-Vec2 getRandomEdgePos( DIR4 d ) {
-    switch(d) {
-    case  DIR4_UP: return Vec2( range(0,SCRW), SCRH+PPC);
-    case  DIR4_DOWN: return Vec2( range(0,SCRW), 0-PPC);
-    case  DIR4_RIGHT: return Vec2(SCRW+PPC, range(0,SCRH) );
-    case  DIR4_LEFT: return Vec2(0-PPC, range(0,SCRH) );
-    default:
-        assert(false);
-    }
+Vec2 getRandomPopPos() {
+    return Vec2(200,200);
 }
 
 void pollPopper(double dt) {
@@ -124,16 +117,15 @@ void pollPopper(double dt) {
     static double last_pop_at = 0;
     if( popper_accum_time > last_pop_at + 5 ) {
         last_pop_at = popper_accum_time;
-        Vec2 at = getRandomEdgePos( randomDir() );
+        Vec2 at = getRandomPopPos();
         int t = irange( 0,100);
         if( t < 5 ) {
             new Girev(at);            
         } else if( t%5==0 ){
             new Takwashi(at);
         } else if( t%2==0) {
-            DIR4 d = randomDir();
             for(int n=0;n<7;n++){
-                Vec2 at = getRandomEdgePos(d);
+                Vec2 at = getRandomPopPos();
                 new Fly(at);
             }
         }

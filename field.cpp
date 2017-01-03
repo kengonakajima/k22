@@ -9,7 +9,6 @@
 #include "enemy.h"
 #include "globals.h"
 
-#include "shipdata.h"
 
 /////////////////////
 
@@ -25,7 +24,6 @@ void Field::clear(){
         for(int x=0;x<width;x++){
             Cell *c = get(x,y);
             c->gt = GT_SPACE;
-            c->subindex = 0;
         }
     }
     print("field init done");
@@ -110,23 +108,31 @@ GROUNDTYPE charToGT( char ch ) {
 }
 
 void Field::generate() {
-    globalInitShipData();
+    // rooms
+    makeRoom( Pos2(5,5), Pos2(27,29));
+    for(int i=0;i<80;i++) {
+        Pos2 lb( irange(10,FIELD_W-10), irange(10,FIELD_H-10));
+        Pos2 rt( lb.x + irange(4,30), lb.y+irange(4,30));
+        makeRoom(lb,rt);
+    }
+    for(int i=0;i<80;i++) {
+        Pos2 p( irange(10,FIELD_W-10), irange(10,FIELD_H-10));
+        makeCorridor(p);
+    }
 
-    int ship_h = elementof(g_ship_data);
-    for(int y=0;y<ship_h;y++) {
-        int ship_ind = ship_h-1-y;
-        int l = strlen(g_ship_data[ship_ind]);
-        for(int x=0;x<l;x++) {
-            GROUNDTYPE gt = charToGT( g_ship_data[ship_ind][x] );
-            Cell *c = get(x,y);
-            if(!c)continue;
-            c->gt = gt;
-            c->subindex = 0;
-            if(gt == GT_HATCH) {
+    // starting point
+    Cell *c=get(10,10);
+    c->gt=GT_HATCH;
+    learn();
+}
+void Field::learn() {
+    for(int y=0;y<height;y++) {
+        for(int x=0;x<width;x++) {
+            Cell *c=get(x,y);
+            if(c->gt == GT_HATCH) {
                 hatch_pos = Pos2(x,y);
-            }
+            }            
         }
-        print("");
     }
 }
 
@@ -136,4 +142,32 @@ bool Field::checkOnShip(Vec2 at, float bodysize ) {
     Cell *lb = get(at+Vec2(-bodysize,-bodysize));
     Cell *rb = get(at+Vec2(bodysize,-bodysize));
     return ( lt&&lt->isWalkable() && rt&&rt->isWalkable() && lb&&lb->isWalkable() && rb&&rb->isWalkable() );
+}
+void Field::makeRoom(Pos2 lb,Pos2 rt) {
+    for(int y=lb.y;y<=rt.y;y++) {
+        for(int x=lb.x;x<=rt.x;x++) {
+            Cell *c=get(x,y);
+            if(c) {
+                c->gt = GT_PANEL;
+            }
+        }
+    }
+}
+void Field::makeCorridor(Pos2 p) {
+    int n=irange(10,100);
+    DIR4 curdir = randomDir();
+    
+    for(int i=0;i<n;i++) {
+        if(range(0,1)<0.05) {
+            if(birandom()) curdir = rightDir(curdir); else curdir = leftDir(curdir);
+        }
+        int dx,dy;
+        dirToDXDY(curdir, &dx,&dy);
+        p.x+=dx;
+        p.y+=dy;
+        Cell *c=get(p);
+        if(c) {
+            c->gt=GT_PANEL;
+        }
+    }
 }

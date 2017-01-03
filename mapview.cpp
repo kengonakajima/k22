@@ -17,11 +17,11 @@ MapView::MapView(int w, int h ) : Prop2D() {
 MapView::~MapView() {
     if(grid) delete grid;
 }
-int groundTypeToBaseIndex( GROUNDTYPE gt, int subind ) {
+int groundTypeToBaseIndex( GROUNDTYPE gt ) {
     switch(gt) {
     case GT_SPACE: return Grid::GRID_NOT_USED;
     case GT_PANEL: return B_ATLAS_SHIP_PANEL;
-    case GT_HATCH: return B_ATLAS_SHIP_HATCH_BASE + subind;
+    case GT_HATCH: return B_ATLAS_SHIP_HATCH_BASE;
     default:
         assertmsg(false, "invalid gt:%d",gt);
         break;        
@@ -32,8 +32,7 @@ void MapView::update(Field *f) {
         for(int x=0;x<f->width;x++) {
             Cell *c = f->get(x,y);
             assert(c);
-            int base_ind = groundTypeToBaseIndex(c->gt,c->subindex);
-            if(c->gt == GT_HATCH ) print("HOGE: %d", base_ind);
+            int base_ind = groundTypeToBaseIndex(c->gt);
             grid->set(x,y,base_ind);
         }
     }

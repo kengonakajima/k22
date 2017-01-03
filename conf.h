@@ -1,10 +1,10 @@
 #ifndef _CONF_H_
 #define _CONF_H_
 
-#define FIELD_W 32
-#define FIELD_H 24
-#define SCRW (24*FIELD_W)
-#define SCRH (24*FIELD_H)
+#define FIELD_W 256
+#define FIELD_H 256
+#define SCRW (800)
+#define SCRH (600)
 
 #define PC_MAX_WALK_SPEED (PPC*10)
 

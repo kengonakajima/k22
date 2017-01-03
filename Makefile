@@ -1,4 +1,4 @@
-SRCS=main.cpp pc.cpp char.cpp field.cpp enemy.cpp effect.cpp shipdata.cpp mapview.cpp
+SRCS=main.cpp pc.cpp char.cpp field.cpp enemy.cpp effect.cpp mapview.cpp
 
 OBJS=$(SRCS:.cpp=.o)
 MOYAILIB=./moyai/libmoyaicl.a
@@ -34,8 +34,6 @@ enemy.o : enemy.cpp
 	g++ -c enemy.cpp $(CFLAGS)
 effect.o : effect.cpp
 	g++ -c effect.cpp $(CFLAGS)
-shipdata.o : shipdata.cpp
-	g++ -c shipdata.cpp $(CFLAGS)
 mapview.o : mapview.cpp
 	g++ -c mapview.cpp $(CFLAGS)
 
