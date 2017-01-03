@@ -109,7 +109,7 @@ GROUNDTYPE charToGT( char ch ) {
 
 void Field::generate() {
     // rooms
-    makeRoom( Pos2(5,5), Pos2(27,29));
+    makeRoom( Pos2(5,5), Pos2(21,14));
     for(int i=0;i<80;i++) {
         Pos2 lb( irange(10,FIELD_W-10), irange(10,FIELD_H-10));
         Pos2 rt( lb.x + irange(4,30), lb.y+irange(4,30));
