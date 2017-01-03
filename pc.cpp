@@ -50,9 +50,7 @@ PC::PC(Client *cl) : Char(CAT_PC, Vec2(0,0), g_base_deck, g_char_layer ), ideal_
     mouse = new Mouse();
     keyboard = new Keyboard();
     pad = new Pad();
-    print("qaskdjfhaklsjdhflkajshdf:%d %d",g_enable_single_screen, !g_enable_single_screen);    
     if( !g_enable_single_screen ) {
-        print("aksdjflaskdjlfkasjdf");
         camera = new Camera(cl);
 
         // local PC is for ease of development. It has null Client pointer

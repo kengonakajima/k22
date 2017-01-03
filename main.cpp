@@ -49,10 +49,9 @@ GLFWwindow *g_window;
 
 bool g_enable_sprite_stream = false;
 bool g_enable_video_stream = false;
+bool g_enable_reprecation = false;
 
 RemoteHead *g_rh;
-#define HEADLESS_SERVER_PORT 22222
-
 
 Field *g_fld;
 MapView *g_mapview;
@@ -194,6 +193,7 @@ void gameUpdate(void) {
     static double last_poll_at = now();
 
     double t = now();
+    double loop_start_at = t;
     double dt = t - last_poll_at;
     
     frame_counter ++;
@@ -221,7 +221,18 @@ void gameUpdate(void) {
     pollSpaceBG(dt);
     pollPopper(dt);
 
-    last_poll_at = t;
+
+
+    double loop_end_at = now();
+    double loop_time = loop_end_at - loop_start_at;
+    double ideal_frame_time = 1.0f / 60.0f;
+    if(loop_time < ideal_frame_time ) {
+        double to_sleep_sec = ideal_frame_time - loop_time;
+        int to_sleep_msec = (int) (to_sleep_sec*1000);
+        if( to_sleep_msec > 0 ) sleepMilliSec(to_sleep_msec);
+    }
+
+    last_poll_at = t;    
 }
 
 
@@ -371,6 +382,7 @@ void gameInit() {
         }
         if(g_enable_sprite_stream) g_rh->enableSpriteStream();
         if(g_enable_video_stream) g_rh->enableVideoStream(SCRW*RETINA,SCRH*RETINA,3);
+        if(g_enable_reprecation) g_rh->enableReprecation(REPRECATOR_SERVER_PORT);
         g_moyai_client->setRemoteHead(g_rh);
         g_rh->setTargetMoyaiClient(g_moyai_client);
         g_sound_system->setRemoteHead(g_rh);
@@ -408,6 +420,9 @@ int main(int argc, char **argv )
         }
         if( strcmp(argv[i], "--vs" ) == 0 || strcmp(argv[i], "--videostream")==0) {
             g_enable_video_stream = true;
+        }
+        if( strcmp(argv[i], "--reprecation") == 0 ) {
+            g_enable_reprecation = true;
         }
     }
     
