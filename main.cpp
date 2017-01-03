@@ -107,26 +107,44 @@ PC *getNearestPC(Vec2 from) {
     }
     return out;
 }
-Vec2 getRandomPopPos() {
-    return Vec2(200,200);
+bool getRandomPopPos( Vec2 *out ) {
+    for(int i=0;i<100;i++) {
+        Pos2 p( irange(0, FIELD_W), irange(0,FIELD_H));
+        Vec2 at(p.x*24,p.y*24);
+        bool okdistance=false;
+        POOL_SCAN(g_pc_cl_pool,PC) {
+            float l = it->second->loc.len(at);
+            float mindistance = 20*24, maxdistance = 40*24;
+            if( l >=mindistance && l <= maxdistance ) okdistance = true;
+        }
+        if(okdistance) {
+            *out = at;
+            return true;
+        }
+    }
+    return false;
 }
 
 void pollPopper(double dt) {
     static double popper_accum_time=0;
     popper_accum_time += dt;
     static double last_pop_at = 0;
-    if( popper_accum_time > last_pop_at + 5 ) {
+    if( popper_accum_time > last_pop_at + 3 ) {
         last_pop_at = popper_accum_time;
-        Vec2 at = getRandomPopPos();
-        int t = irange( 0,100);
-        if( t < 5 ) {
-            new Girev(at);            
-        } else if( t%5==0 ){
-            new Takwashi(at);
-        } else if( t%2==0) {
-            for(int n=0;n<7;n++){
-                Vec2 at = getRandomPopPos();
-                new Fly(at);
+        Vec2 at;
+        if( getRandomPopPos(&at) ) {
+            int t = irange( 0,100);
+            if( t < 5 ) {
+                new Girev(at);            
+            } else if( t%5==0 ){
+                new Takwashi(at);
+            } else if( t%2==0) {
+                for(int n=0;n<7;n++){
+                    Vec2 at;
+                    if(getRandomPopPos(&at)){
+                        new Fly(at);
+                    }
+                }
             }
         }
     }
@@ -153,7 +171,6 @@ void debugKeyPressed( PC *pc, int key ) {
 void keyboardCallback( GLFWwindow *window, int key, int scancode, int action, int mods ) {
     PC *pc = getLocalPC();
     if(!pc) return;
-    print("keyboardCallback pcid:%d",pc->id);
     pc->keyboard->update( key, action, mods & GLFW_MOD_SHIFT, mods & GLFW_MOD_CONTROL, mods & GLFW_MOD_ALT );
     if(action) {
         debugKeyPressed(pc,key);
