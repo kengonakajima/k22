@@ -44,6 +44,7 @@ Sound *g_beamhit_sound;
 int g_last_render_cnt ;
 
 bool g_enable_single_screen = false;
+bool g_enable_synclinear = true;
 
 GLFWwindow *g_window;
 
@@ -259,6 +260,7 @@ void onConnectCallback( RemoteHead *rh, Client *cl ) {
 void onRemoteKeyboardCallback( Client *cl, int kc, int act, int modshift, int modctrl, int modalt ) {
     PC *pc = getPC(cl);
     if(pc) pc->keyboard->update(kc,act,modshift,modctrl,modalt);
+    if(act) debugKeyPressed(pc,kc);
 }
 void onRemoteMouseButtonCallback( Client *cl, int btn, int act, int modshift, int modctrl, int modalt ) {
     PC *pc = getPC(cl);
@@ -430,6 +432,9 @@ int main(int argc, char **argv )
         }
         if( strcmp(argv[i], "--reprecation") == 0 ) {
             g_enable_reprecation = true;
+        }
+        if( strcmp(argv[i], "--skiplinear") == 0 ) {
+            g_enable_synclinear = false;
         }
     }
     

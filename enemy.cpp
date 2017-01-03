@@ -237,7 +237,7 @@ void Fly::onKill() {
 }
 
 /////////////////////
-
+extern bool g_enable_synclinear;
 Bullet::Bullet( BULLETTYPE blt, Vec2 at, Vec2 to ) : Enemy( at, g_base_deck, FLYING ), bullet_type(blt), round_vel(0), round_dia(0), hit_beam_size(0), friction(0), rot_speed(0) {
     beam_hits = false;
     clean_at = 20;
@@ -246,7 +246,9 @@ Bullet::Bullet( BULLETTYPE blt, Vec2 at, Vec2 to ) : Enemy( at, g_base_deck, FLY
     timeout = 10;
     bool to_rot = false;
     bool to_quantize = true;
-
+    
+    if(g_enable_synclinear) setLocSyncMode(LOCSYNCMODE_LINEAR);
+    
     switch(blt) {
     case BLT_GOOBALL:
         vel = PPC * range(3,6);
