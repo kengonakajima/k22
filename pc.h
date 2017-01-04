@@ -38,6 +38,7 @@ public:
     Keyboard *keyboard;
     Pad *pad;
     Camera *camera;
+    Viewport *viewport;
     
     PC( Client *cl );
     virtual bool charPoll( double dt );

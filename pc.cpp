@@ -10,7 +10,7 @@
 #include "globals.h"
 #include "conf.h"
 
-PC::PC(Client *cl) : Char(CAT_PC, Vec2(0,0), g_base_deck, g_char_layer ), ideal_v(0,0), dir(DIR4_DOWN), body_size(8), shoot_v(0,0), last_shoot_at(0), knockback_until(0), knockback_v(0,0), equip_prop(NULL), died_at(0), recalled_at(0), invincible_until(0), cl(cl), mouse(0), keyboard(0), pad(0), camera(0) {
+PC::PC(Client *cl) : Char(CAT_PC, Vec2(0,0), g_base_deck, g_char_layer ), ideal_v(0,0), dir(DIR4_DOWN), body_size(8), shoot_v(0,0), last_shoot_at(0), knockback_until(0), knockback_v(0,0), equip_prop(NULL), died_at(0), recalled_at(0), invincible_until(0), cl(cl), mouse(0), keyboard(0), pad(0), camera(0), viewport(0) {
     tex_epsilon=0;
     priority = PRIO_CHAR;
 
@@ -52,12 +52,18 @@ PC::PC(Client *cl) : Char(CAT_PC, Vec2(0,0), g_base_deck, g_char_layer ), ideal_
     pad = new Pad();
     if( !g_enable_single_screen ) {
         camera = new Camera(cl);
-
+        
         // local PC is for ease of development. It has null Client pointer
         if(cl) {
             g_char_layer->addDynamicCamera(camera);
             g_effect_layer->addDynamicCamera(camera);
             g_field_layer->addDynamicCamera(camera);
+            viewport = new Viewport(cl);
+            viewport->setSize(SCRW,SCRH);
+            viewport->setScale2D(SCRW,SCRH);             
+            g_char_layer->addDynamicViewport(viewport);
+            g_effect_layer->addDynamicViewport(viewport);
+            g_field_layer->addDynamicViewport(viewport);
         } else {
             g_char_layer->setCamera(camera);
             g_effect_layer->setCamera(camera);
