@@ -113,6 +113,8 @@ Beam::Beam( Vec2 lc, Vec2 at, BEAMTYPE beamtype, int base_index ) : Char( CAT_BE
     tex_epsilon = DEFAULT_TEX_EPS;
 
     hitsz = 4;
+
+    if(g_enable_synclinear) setLocSyncMode(LOCSYNCMODE_LINEAR);
 }
 
 void Beam::updateIndex() {

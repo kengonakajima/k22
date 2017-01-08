@@ -36,4 +36,7 @@ PC *getNearestPC(Vec2 from);
 
 extern bool g_enable_single_screen;
 
+extern bool g_enable_synclinear;
+
+
 #endif

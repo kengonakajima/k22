@@ -237,7 +237,6 @@ void Fly::onKill() {
 }
 
 /////////////////////
-extern bool g_enable_synclinear;
 Bullet::Bullet( BULLETTYPE blt, Vec2 at, Vec2 to ) : Enemy( at, g_base_deck, FLYING ), bullet_type(blt), round_vel(0), round_dia(0), hit_beam_size(0), friction(0), rot_speed(0) {
     beam_hits = false;
     clean_at = 20;
