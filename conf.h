@@ -1,8 +1,8 @@
 #ifndef _CONF_H_
 #define _CONF_H_
 
-#define FIELD_W 256
-#define FIELD_H 256
+#define FIELD_W 128
+#define FIELD_H 128
 #define SCRW (800)
 #define SCRH (600)
 
