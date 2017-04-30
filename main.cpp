@@ -400,6 +400,9 @@ void gameInit() {
         g_rh->setOnKeyboardCallback(onRemoteKeyboardCallback);
         g_rh->setOnMouseButtonCallback(onRemoteMouseButtonCallback);
         g_rh->setOnMouseCursorCallback(onRemoteMouseCursorCallback);
+        g_rh->setLinearSyncScoreThres(50);
+        g_rh->setNonLinearSyncScoreThres(200);
+        g_rh->setSortSyncThres(10);
 
         g_rh->addPrerequisites(g_girev_deck);
     }
