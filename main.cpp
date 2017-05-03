@@ -45,6 +45,7 @@ int g_last_render_cnt ;
 
 bool g_enable_single_screen = false;
 bool g_enable_synclinear = true;
+bool g_enable_enenmy_pop = true;
 
 GLFWwindow *g_window;
 
@@ -160,12 +161,19 @@ void debugKeyPressed( PC *pc, int key ) {
         break;
     case 'U':
         new Girev(at);
+        new Bullet( BLT_SPARIO, at, Vec2(10,20) );        
         break;
     case 'Y':
         new Takwashi(at);
         break;
     case 'T':
         new Fly(at);
+        break;
+    case 'K':
+        new Bullet( BLT_SPARIO, at, Vec2(10,20) );
+        break;
+    case 'L':
+        new Repairer(at);
         break;
     }
 }
@@ -221,7 +229,7 @@ void gameUpdate(void) {
     }
 
     // replace white to random color
-    g_eye_col_replacer->setColor( Color(0xF7E26B), Color( range(0,1),range(0,1),range(0,1),1), 0.02 );
+    if( frame_counter%20==0) g_eye_col_replacer->setColor( Color(0x00FFFF), Color( range(0,1),range(0,1),range(0,1),1), 0.02 );
 
     if( glfwGetKey( g_window, 'Q') ) {
         print("Q pressed");
@@ -229,7 +237,7 @@ void gameUpdate(void) {
     }
 
     pollSpaceBG(dt);
-    pollPopper(dt);
+    if(g_enable_enenmy_pop) pollPopper(dt);
 
 
 
@@ -348,6 +356,7 @@ void gameInit() {
     g_girev_deck = new TileDeck();
     g_girev_deck->setTexture(girevtex);
     g_girev_deck->setSize(1,1,64,64);
+    print("Girev deck:%d",g_girev_deck->id);
     
     g_static_bg_camera = new Camera();
     g_static_bg_camera->setLoc(SCRW/2,SCRH/2);
@@ -440,6 +449,9 @@ int main(int argc, char **argv )
         }
         if( strcmp(argv[i], "--skiplinear") == 0 ) {
             g_enable_synclinear = false;
+        }
+        if( strcmp(argv[i], "--noenemy")==0) {
+            g_enable_enenmy_pop = false;
         }
     }
     
