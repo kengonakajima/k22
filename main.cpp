@@ -52,6 +52,7 @@ GLFWwindow *g_window;
 bool g_enable_sprite_stream = false;
 bool g_enable_video_stream = false;
 bool g_enable_reprecation = false;
+bool g_disable_timestamp = false;
 
 RemoteHead *g_rh;
 
@@ -411,7 +412,8 @@ void gameInit() {
         g_rh->setOnMouseCursorCallback(onRemoteMouseCursorCallback);
         g_rh->setLinearSyncScoreThres(50);
         g_rh->setNonLinearSyncScoreThres(200);
-        g_rh->setSortSyncThres(10);
+        g_rh->setSortSyncThres(20);
+        if(g_disable_timestamp) g_rh->disableTimestamp();
 
         g_rh->addPrerequisites(g_girev_deck);
     }
@@ -452,6 +454,9 @@ int main(int argc, char **argv )
         }
         if( strcmp(argv[i], "--noenemy")==0) {
             g_enable_enenmy_pop = false;
+        }
+        if( strcmp( argv[i], "--disable-timestamp")==0) {
+            g_disable_timestamp = true;
         }
     }
     

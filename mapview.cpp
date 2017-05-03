@@ -83,12 +83,14 @@ void setupSpaceBG() {
         g_bg[i]->setScl(SCRW+8,SCRH); // +8 for filling gap
         float dx = SCRW * i;
         g_bg[i]->setLoc(SCRW/2-dx,SCRH/2);
+        g_bg[i]->setLocSyncMode(LOCSYNCMODE_LINEAR);
         g_bg_layer->insertProp(g_bg[i]);
     }
     g_planet = new Prop2D();
     g_planet->setTexture(g_planet_tex);
     g_planet->setScl( g_planet_tex->getSize() *2);
     g_planet->setLoc(100,100);
+    g_planet->setLocSyncMode(LOCSYNCMODE_LINEAR);
     g_bg_layer->insertProp(g_planet);
 }
 void pollSpaceBG(double dt) {
