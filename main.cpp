@@ -266,6 +266,11 @@ void onConnectCallback( RemoteHead *rh, Client *cl ) {
     print("onConnectCallback: clid:%d",cl->id);
     addPC(cl);
 }
+void onDisconnectCallback( RemoteHead *rh, Client *cl ) {
+    print("onDisconnectCallback: clid:%d",cl->id);
+    PC *pc = getPC(cl);
+    delPC(pc);
+}
 void onRemoteKeyboardCallback( Client *cl, int kc, int act, int modshift, int modctrl, int modalt ) {
     PC *pc = getPC(cl);
     if(pc) pc->keyboard->update(kc,act,modshift,modctrl,modalt);
@@ -407,6 +412,7 @@ void gameInit() {
         g_sound_system->setRemoteHead(g_rh);
         g_rh->setTargetSoundSystem(g_sound_system);
         g_rh->setOnConnectCallback(onConnectCallback);
+        g_rh->setOnDisconnectCallback(onDisconnectCallback);        
         g_rh->setOnKeyboardCallback(onRemoteKeyboardCallback);
         g_rh->setOnMouseButtonCallback(onRemoteMouseButtonCallback);
         g_rh->setOnMouseCursorCallback(onRemoteMouseCursorCallback);
