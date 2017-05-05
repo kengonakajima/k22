@@ -39,6 +39,8 @@ PC::PC(Client *cl) : Char(CAT_PC, Vec2(0,0), g_base_deck, g_char_layer ), ideal_
     equip_prop->setIndex( B_ATLAS_PC_EQUIPMENT_BEAMGUN_BASE );
     addChild( equip_prop );
 
+    if(cl) setTargetClient(cl); // Camera always keep realtime eye on this prop (no bandwidth throttling)
+    
     // no main sprite
     setIndex(-1);
 

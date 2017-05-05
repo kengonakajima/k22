@@ -352,7 +352,7 @@ Beam *Bullet::checkHitBeam() {
 Takwashi::Takwashi( Vec2 lc ) : Enemy( lc, g_base_deck, FLYING ), shoot_start(0), shoot_end(0), last_shoot_at(0), to_shoot(false) {
     setIndex( B_ATLAS_TAKWASHI );
     v = Vec2(0,0);
-    hp = maxhp = 25;
+    hp = maxhp = 3;
     setFragmentShader(g_eye_col_replacer);
     enemy_type = ET_TAKWASHI;
 }
@@ -398,10 +398,10 @@ bool Takwashi::enemyPoll(double dt) {
 Girev::Girev( Vec2 lc ) :Enemy( lc, g_girev_deck, FLYING ), shoot_at(0), turn_at(0), repairer_at(3) {
     setIndex(0);
     v = Vec2(0,0);
-    hp = maxhp = 500;
+    hp = maxhp = 5;
     setScl(64,64);
     timeout = ENEMY_DEFAULT_TIMEOUT * 100;
-    enemy_type = ET_GIREV;    
+    enemy_type = ET_GIREV;
 }
 
 bool Girev::enemyPoll(double dt) {
