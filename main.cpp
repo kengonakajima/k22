@@ -112,7 +112,8 @@ PC *getNearestPC(Vec2 from) {
     return out;
 }
 bool getRandomPopPos( Vec2 *out ) {
-    for(int i=0;i<100;i++) {
+    int trial_num = 10;
+    for(int i=0;i<trial_num;i++) {
         Pos2 p( irange(0, FIELD_W), irange(0,FIELD_H));
         Vec2 at(p.x*24,p.y*24);
         bool okdistance=false;
@@ -133,7 +134,9 @@ void pollPopper(double dt) {
     static double popper_accum_time=0;
     popper_accum_time += dt;
     static double last_pop_at = 0;
-    if( popper_accum_time > last_pop_at + 3 ) {
+    double interval = 5 - ( g_pc_cl_pool.size() / 10);
+    if(interval<3)interval=3;
+    if( popper_accum_time > last_pop_at + interval ) {
         last_pop_at = popper_accum_time;
         Vec2 at;
         if( getRandomPopPos(&at) ) {
