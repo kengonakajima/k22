@@ -55,6 +55,8 @@ bool g_enable_reprecation = false;
 bool g_disable_timestamp = false;
 bool g_disable_rendering = false;
 
+float g_zoom_rate = 1;
+
 RemoteHead *g_rh;
 
 Field *g_fld;
@@ -333,7 +335,7 @@ void gameInit() {
 
     g_viewport = new Viewport();
     g_viewport->setSize(SCRW,SCRH); // set actual framebuffer size to output
-    g_viewport->setScale2D(SCRW,SCRH); // set scale used by props that will be rendered
+    g_viewport->setScale2D(SCRW*g_zoom_rate,SCRH*g_zoom_rate); // set scale used by props that will be rendered
 
     g_field_layer = new Layer();
     g_field_layer->setViewport(g_viewport);
@@ -470,6 +472,9 @@ int main(int argc, char **argv )
         }
         if( strcmp( argv[i], "--disable-rendering")==0) {
             g_disable_rendering = true;
+        }
+        if( strcmp( argv[i], "--whole-view")==0) {
+            g_zoom_rate = 5;
         }
     }
     
