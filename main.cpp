@@ -53,6 +53,7 @@ bool g_enable_sprite_stream = false;
 bool g_enable_video_stream = false;
 bool g_enable_reprecation = false;
 bool g_disable_timestamp = false;
+bool g_disable_rendering = false;
 
 RemoteHead *g_rh;
 
@@ -464,12 +465,15 @@ int main(int argc, char **argv )
         if( strcmp( argv[i], "--disable-timestamp")==0) {
             g_disable_timestamp = true;
         }
+        if( strcmp( argv[i], "--disable-rendering")==0) {
+            g_disable_rendering = true;
+        }
     }
     
     gameInit();
     while( !glfwWindowShouldClose(g_window) ){
         gameUpdate();
-        gameRender();
+        if(!g_disable_rendering) gameRender();
 
     }
     gameFinish();
