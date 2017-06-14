@@ -135,8 +135,17 @@ void Beam::createSparkEffect() {
         switch(type) {
         case BEAMTYPE_WIDE:
             {
+#if 0
+                // 微妙に大きさを変化させながら粒子が飛散するバージョン
                 Particle *e = new Particle( loc, range(0.5,1),range(0.5,1),0, 0.2,0, index+AU, g_base_deck, true );
+#else
+                // 一定の大きさで粒子が飛散するバージョン。通信帯域の消費がかなり抑えられる
+                float scl = range(0.5,1);
+                Particle *e = new Particle( loc, scl,scl,0, 0.2,0, index+AU, g_base_deck, true );
+                e->setLocSyncMode(LOCSYNCMODE_LINEAR);
+#endif                
                 e->v = (v*0.7).randomize(200);
+
             }
             break;
         case BEAMTYPE_LASER:
