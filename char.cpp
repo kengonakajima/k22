@@ -142,7 +142,7 @@ void Beam::createSparkEffect() {
                 // 一定の大きさで粒子が飛散するバージョン。通信帯域の消費がかなり抑えられる
                 float scl = range(0.5,1);
                 Particle *e = new Particle( loc, scl,scl,0, 0.2,0, index+AU, g_base_deck, true );
-                e->setLocSyncMode(LOCSYNCMODE_LINEAR);
+                if(g_enable_synclinear) e->setLocSyncMode(LOCSYNCMODE_LINEAR);
 #endif                
                 e->v = (v*0.7).randomize(200);
 
