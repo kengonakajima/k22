@@ -43,7 +43,7 @@ Sound *g_hurt_sound;
 Sound *g_beamhit_sound;
 int g_last_render_cnt ;
 
-bool g_enable_single_screen = false;
+bool g_enable_single_camera = false;
 bool g_enable_synclinear = true;
 bool g_enable_enenmy_pop = true;
 
@@ -374,7 +374,7 @@ void gameInit() {
     g_static_bg_camera->setLoc(SCRW/2,SCRH/2);
 
     g_bg_layer->setCamera(g_static_bg_camera);    
-    if( g_enable_single_screen ) {
+    if( g_enable_single_camera ) {
         g_field_layer->setCamera(g_static_bg_camera);
         g_char_layer->setCamera(g_static_bg_camera);
         g_effect_layer->setCamera(g_static_bg_camera);
@@ -449,8 +449,8 @@ void gameFinish() {
 int main(int argc, char **argv )
 {
     for(int i=0;i<argc;i++){
-        if( strcmp(argv[i], "--singlescreen" ) == 0 ) {
-            g_enable_single_screen = true;
+        if( strcmp(argv[i], "--singlecamera" ) == 0 ) {
+            g_enable_single_camera = true;
         }
         if( strcmp(argv[i], "--ss" ) == 0 || strcmp(argv[i], "--spritestream")==0) {
             g_enable_sprite_stream = true;

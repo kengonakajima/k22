@@ -34,7 +34,7 @@ Vec2 screenPosToWorldLoc( Vec2 scrpos, Camera *cam );
 class PC;
 PC *getNearestPC(Vec2 from);
 
-extern bool g_enable_single_screen;
+extern bool g_enable_single_camera;
 
 extern bool g_enable_synclinear;
 

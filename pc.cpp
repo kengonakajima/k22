@@ -52,7 +52,7 @@ PC::PC(Client *cl) : Char(CAT_PC, Vec2(0,0), g_base_deck, g_char_layer ), ideal_
     mouse = new Mouse();
     keyboard = new Keyboard();
     pad = new Pad();
-    if( !g_enable_single_screen ) {
+    if( !g_enable_single_camera ) {
         camera = new Camera(cl);
         
         // local PC is for ease of development. It has null Client pointer
@@ -292,7 +292,7 @@ bool PC::charPoll( double dt ) {
     tryShoot();
 
     // move camera
-    if(camera) camera->setLoc(loc); // camera is null when single_screen
+    if(camera) camera->setLoc(loc); // camera is null when single_camera
 
     return true;
 }
