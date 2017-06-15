@@ -1,7 +1,6 @@
 ﻿#ifndef _PC_H_
 #define _PC_H_
 
-class Debris;
 class Enemy;
 class Client;
 class Keyboard;
