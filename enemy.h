@@ -126,28 +126,6 @@ public:
     virtual bool enemyPoll(double dt);
 };
 
-class Chaser : public Enemy {
-public:
-    double reset_target_at;
-    double shoot_at;
-    float thres;
-    double accel_at;
-    Chaser( Vec2 lc, int client_id=0, int internal_id=0 );
-    virtual bool enemyPoll(double dt);
-};
-
-class Builder : public Enemy {
-public:
-    double turn_at;
-    bool building;
-    DIR build_dir;
-    int build_cnt;
-    double build_after_at;
-    Builder( Vec2 lc, int client_id=0, int internal_id=0 );
-    virtual bool enemyPoll(double dt);
-    virtual void onTouchWall( Vec2 nextloc, int hitbits, bool nxok, bool nyok );    
-};
-
 
 class Girev : public Enemy {
 public:
