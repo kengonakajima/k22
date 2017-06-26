@@ -443,11 +443,7 @@ void gameFinish() {
     glfwTerminate();
 }
 
-
-
-#if !(TARGET_IPHONE_SIMULATOR ||TARGET_OS_IPHONE)        
-int main(int argc, char **argv )
-{
+void parseArgs(int argc, char **argv ) {
     for(int i=0;i<argc;i++){
         if( strcmp(argv[i], "--singlecamera" ) == 0 ) {
             g_enable_single_camera = true;
@@ -477,7 +473,14 @@ int main(int argc, char **argv )
             g_zoom_rate = 5;
         }
     }
-    
+}
+
+
+
+#if !(TARGET_IPHONE_SIMULATOR ||TARGET_OS_IPHONE)        
+int main(int argc, char **argv )
+{
+    parseArgs(argc, argv );
     gameInit();
     while( !glfwWindowShouldClose(g_window) ){
         gameUpdate();
