@@ -39,7 +39,6 @@ public:
     
     virtual bool prop2DPoll( double dt );
     virtual bool charPoll( double dt ){ return true; }
-    virtual void onTouchWall( Vec2 nextloc, int hitbits, bool next_x_ok, bool next_y_ok ) {};
 
     // Rotate a sprite (Pixel art have to face right)
     inline void updateDefaultRightFacedRot( Vec2 v ) {

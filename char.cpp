@@ -47,9 +47,6 @@ Vec2 Char::calcNextLoc( Vec2 from, Vec2 nextloc, float body_size, bool flying ) 
 
         if( nxok ) out.x = nxloc.x; 
         if( nyok ) out.y = nyloc.y;
-
-        // hit on something.
-        onTouchWall( nextloc, hitbits, nxok, nyok );
         
         return out;
     } else {
