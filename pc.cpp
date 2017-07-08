@@ -374,9 +374,6 @@ float PC::getShootIntervalSec() {
     return 0.2f;
 }
 
-void PC::onDelete() {
-}
-
 
 
 

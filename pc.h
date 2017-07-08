@@ -56,7 +56,6 @@ public:
     
     static Vec2 calcEquipPosition(DIR4 d);
 
-    virtual void onDelete();
 
     void tryShoot();
     Vec2 getHandLocalLoc( Vec2 direction );
