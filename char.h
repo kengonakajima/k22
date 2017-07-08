@@ -23,7 +23,6 @@ typedef enum {
 class Char : public Prop2D {
 public:
     CATEGORY category;
-    int step_cnt;
     double clean_at;
 
     Char( CATEGORY cat, Vec2 lc, TileDeck *dk, Layer *tgtlayer );
