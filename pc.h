@@ -48,7 +48,6 @@ public:
 
     static PC *getNearestPC( Vec2 from );
 
-    float getShootIntervalSec();
     void respawn();
     
     static Vec2 calcEquipPosition(DIR4 d);

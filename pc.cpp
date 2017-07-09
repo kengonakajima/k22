@@ -320,7 +320,7 @@ Vec2 PC::getHandLocalLoc(Vec2 direction) {
 
 void PC::tryShoot() {
     if( shoot_v.len() == 0 ) return;
-    if( last_shoot_at > accum_time - getShootIntervalSec() ) return;
+    if( last_shoot_at > accum_time - 0.2 ) return;
     last_shoot_at = accum_time;
     Vec2 handv = getHandLocalLoc(shoot_v);
     g_shoot_sound->play();
@@ -367,9 +367,7 @@ PC *PC::getNearestPC( Vec2 from ) {
     return (PC*)ch;
 }
 
-float PC::getShootIntervalSec() {
-    return 0.2f;
-}
+
 
 
 
