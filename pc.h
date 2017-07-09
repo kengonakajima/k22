@@ -25,7 +25,6 @@ public:
     Prop2D *hair_prop; //
 
     double died_at;
-    double recalled_at;
     
     // Customize look and sounds 
     int hair_base_index, face_base_index, body_base_index;

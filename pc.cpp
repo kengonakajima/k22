@@ -10,7 +10,7 @@
 #include "globals.h"
 #include "conf.h"
 
-PC::PC(Client *cl) : Char(CAT_PC, Vec2(0,0), g_base_deck, g_char_layer ), ideal_v(0,0), dir(DIR4_DOWN), body_size(8), shoot_v(0,0), last_shoot_at(0), knockback_until(0), knockback_v(0,0), equip_prop(NULL), died_at(0), recalled_at(0), invincible_until(0), cl(cl), mouse(0), keyboard(0), pad(0), camera(0), viewport(0) {
+PC::PC(Client *cl) : Char(CAT_PC, Vec2(0,0), g_base_deck, g_char_layer ), ideal_v(0,0), dir(DIR4_DOWN), body_size(8), shoot_v(0,0), last_shoot_at(0), knockback_until(0), knockback_v(0,0), equip_prop(NULL), died_at(0), invincible_until(0), cl(cl), mouse(0), keyboard(0), pad(0), camera(0), viewport(0) {
     tex_epsilon=0;
     priority = PRIO_CHAR;
 
@@ -111,7 +111,7 @@ bool PC::charPoll( double dt ) {
         dir = shootd;
     }
 
-    if( died_at == 0 && recalled_at == 0 ) {
+    if( died_at == 0 ) {
         setIndex(-1);
         bool walking = (d != DIR4_NONE);
         body_prop->setXFlip( false );
