@@ -75,9 +75,6 @@ PC::PC(Client *cl) : Char(CAT_PC, Vec2(0,0), g_base_deck, g_char_layer ), ideal_
 }
 
 bool PC::charPoll( double dt ) {
-    
-    if( pcPoll(dt) == false ) return false;
-
     pad->readKeyboard(keyboard);
     Vec2 ctl_move;
     pad->getVec(&ctl_move);

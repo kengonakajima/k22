@@ -41,7 +41,6 @@ public:
     PC( Client *cl );
     virtual bool charPoll( double dt );
 
-    virtual bool pcPoll( double dt ) { return true; }
 
     bool isLocal() { return (cl==0); }
     
