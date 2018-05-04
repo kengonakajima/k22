@@ -28,7 +28,6 @@ Layer *g_bg_layer;
 Layer *g_char_layer;
 Layer *g_effect_layer;
 Layer *g_field_layer;
-Texture *g_base_atlas;
 Texture *g_space_bg_tex;
 Texture *g_planet_tex;
 TileDeck *g_base_deck;
@@ -351,10 +350,10 @@ void gameInit() {
     g_moyai_client->insertLayer(g_effect_layer);    
     
     g_effect_layer->setViewport(g_viewport);
-    g_base_atlas = new Texture();
-    g_base_atlas->load("./images/k22base1024.png");
+    Texture *tex = new Texture();
+    tex->load("./images/k22base1024.png");
     g_base_deck = new TileDeck();
-    g_base_deck->setTexture(g_base_atlas);
+    g_base_deck->setTexture(tex);
     g_base_deck->setSize(32,42,24,24 );
 
     g_space_bg_tex = new Texture();
