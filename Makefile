@@ -9,11 +9,11 @@ FTGLLIB=./moyai/libftgl.a
 FTLIB=./moyai/freetype-2.4.10/objs/.libs/libfreetype.a
 BZ2LIB=./moyai/bzip2-1.0.6/libbz2.a
 ZLIB=./moyai/zlib-1.2.7/libz.a
-UVLIB=/usr/local/lib/libuv.a
-OGGLIB=/usr/local/lib/libvorbis.a /usr/local/lib/libvorbisfile.a /usr/local/lib/libogg.a
+UVLIB=./moyai/libuv-1.20.2/.libs/libuv.a
+JPEGLIB=./moyai/jpeg-8d/.libs/libjpeg.a
 FRAMEWORKS=-framework Cocoa -framework IOKit -framework OpenGL -framework CoreFoundation -framework CoreVideo -framework CoreMedia -framework AudioToolbox -framework OpenAL
-LIBFLAGS=-L/usr/local/lib -ljpeg -m64  $(MOYAILIB) $(GLFWLIB) $(SNAPPYLIB) $(FTGLLIB) $(FTLIB) $(BZ2LIB) $(ZLIB) $(UVLIB) $(FRAMEWORKS) $(OGGLIB) $(ALUTLIB)
-CFLAGS=-O0 -g  -Wall -m64  -I./moyai/glfw-3.2/include -I./moyai -I/usr/local/include
+LIBFLAGS=-L/usr/local/lib -m64  $(MOYAILIB) $(GLFWLIB) $(SNAPPYLIB) $(FTGLLIB) $(FTLIB) $(BZ2LIB) $(ZLIB) $(UVLIB) $(FRAMEWORKS) $(OGGLIB) $(ALUTLIB) $(JPEGLIB)
+CFLAGS=-O0 -g  -Wall -m64  -I./moyai/glfw-3.2/include -I./moyai -I./moyai/libuv-1.20.2/include
 
 OUT=k22
 
